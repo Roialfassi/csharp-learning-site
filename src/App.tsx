@@ -5,6 +5,7 @@ import ConsolePlayground from './pages/ConsolePlayground'
 import Exercises from './pages/Exercises'
 import ExerciseDetail from './pages/ExerciseDetail'
 import Quizzes from './pages/Quizzes'
+import QuizDetail from './pages/QuizDetail'
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
           <Route path="/exercises" element={<Exercises />} />
           <Route path="/exercise/:id" element={<ExerciseDetail />} />
           <Route path="/quizzes" element={<Quizzes />} />
+          <Route path="/quiz/:id" element={<QuizDetail />} />
         </Routes>
       </div>
     </BrowserRouter>

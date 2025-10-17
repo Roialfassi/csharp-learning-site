@@ -1,42 +1,84 @@
+import { Link } from 'react-router-dom'
+import { ChevronRight } from 'lucide-react'
+import { quizzes } from '../data/quizzes'
+import { storage } from '../utils/storage'
+
 export default function Quizzes() {
+  const quizProgress = storage.getQuizProgress()
+
   return (
     <div className="min-h-screen bg-gray-100 py-8 px-4">
       <div className="max-w-6xl mx-auto">
-        <h1 className="text-4xl font-bold mb-8 text-gray-800">
-          🧠 חידונים
-        </h1>
-
-        <div className="grid md:grid-cols-2 gap-6">
-          {[1, 2, 3, 4].map((i) => (
-            <div key={i} className="bg-white rounded-lg shadow p-6">
-              <div className="mb-4">
-                <span className="bg-purple-100 text-purple-700 px-3 py-1 rounded-full text-sm font-semibold">
-                  חידון {i}
-                </span>
-              </div>
-              <h3 className="text-lg font-bold mb-2 text-gray-800">
-                חידון #{i}
-              </h3>
-              <p className="text-gray-600 mb-4">
-                נושא החידון יופיע כאן
-              </p>
-              <div className="flex justify-between items-center">
-                <span className="text-sm text-gray-500">10 שאלות</span>
-                <button className="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700">
-                  התחל
-                </button>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {/* Info */}
-        <div className="mt-8 bg-blue-50 border-r-4 border-blue-600 p-6 rounded">
-          <h3 className="text-xl font-bold mb-2 text-gray-800">ממתיני פתיחה...</h3>
-          <p className="text-gray-700">
-            תכונה זו תהיה זמינה בשלב הבא. כאן יופיעו חידונים מרובי ברירה עם ניתוח מפורט של התשובות
+        <div className="mb-8">
+          <h1 className="text-4xl font-bold text-gray-800 mb-2">🧠 חידונים</h1>
+          <p className="text-gray-600">
+            בדוק את הידע שלך עם חידונים מרובי ברירה על מושגי C# שונים
           </p>
         </div>
+
+        {/* Stats */}
+        <div className="grid md:grid-cols-3 gap-4 mb-8">
+          <div className="bg-white rounded-lg shadow p-6">
+            <p className="text-gray-600 mb-2">סך הכל חידונים</p>
+            <p className="text-3xl font-bold text-blue-600">{quizzes.length}</p>
+          </div>
+          <div className="bg-white rounded-lg shadow p-6">
+            <p className="text-gray-600 mb-2">חידונים שנעשו</p>
+            <p className="text-3xl font-bold text-green-600">{Object.keys(quizProgress).length}</p>
+          </div>
+          <div className="bg-white rounded-lg shadow p-6">
+            <p className="text-gray-600 mb-2">ממוצע ציונים</p>
+            <p className="text-3xl font-bold text-purple-600">
+              {Object.keys(quizProgress).length > 0
+                ? Math.round(
+                    Object.values(quizProgress).reduce((acc: any, q: any) => acc + q.score, 0) /
+                      Object.keys(quizProgress).length
+                  )
+                : 0}
+            </p>
+          </div>
+        </div>
+
+        {/* Quizzes List */}
+        <div className="grid md:grid-cols-2 gap-6">
+          {quizzes.map((quiz) => {
+            const progress = quizProgress[quiz.id]
+            const hasAttempted = !!progress
+            return (
+              <Link
+                key={quiz.id}
+                to={`/quiz/${quiz.id}`}
+                className="bg-white rounded-lg shadow hover:shadow-lg transition p-6 hover:scale-105 transform transition-all duration-200"
+              >
+                <div className="mb-4 flex justify-between items-start">
+                  <div>
+                    <h3 className="text-xl font-bold text-gray-800 mb-2">{quiz.title}</h3>
+                    <p className="text-sm text-gray-600 mb-2">{quiz.questions.length} שאלות</p>
+                  </div>
+                  {hasAttempted && (
+                    <div className="text-center">
+                      <div className="text-3xl font-bold text-blue-600">{progress.score}</div>
+                      <div className="text-xs text-gray-600">/ {quiz.questions.length}</div>
+                    </div>
+                  )}
+                </div>
+
+                <p className="text-gray-700 mb-4">{quiz.description}</p>
+
+                <div className="flex items-center gap-2 text-blue-600 font-semibold">
+                  <span>{hasAttempted ? 'נסו שוב' : 'התחילו'}</span>
+                  <ChevronRight size={18} />
+                </div>
+              </Link>
+            )
+          })}
+        </div>
+
+        {quizzes.length === 0 && (
+          <div className="bg-blue-50 border-r-4 border-blue-600 p-6 rounded text-center">
+            <p className="text-gray-700">אין חידונים זמינים כרגע</p>
+          </div>
+        )}
       </div>
     </div>
   )
