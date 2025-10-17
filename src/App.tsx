@@ -6,6 +6,7 @@ import Exercises from './pages/Exercises'
 import ExerciseDetail from './pages/ExerciseDetail'
 import Quizzes from './pages/Quizzes'
 import QuizDetail from './pages/QuizDetail'
+import LearningPath from './pages/LearningPath'
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
         <Navbar />
         <Routes>
           <Route path="/" element={<LandingPage />} />
+          <Route path="/path" element={<LearningPath />} />
           <Route path="/playground" element={<ConsolePlayground />} />
           <Route path="/exercises" element={<Exercises />} />
           <Route path="/exercise/:id" element={<ExerciseDetail />} />

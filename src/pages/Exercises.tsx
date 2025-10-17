@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom'
 import { ChevronRight } from 'lucide-react'
 import { exercises } from '../data/exercises'
 import { storage } from '../utils/storage'
+import TopicSidebar from '../components/TopicSidebar'
 
 export default function Exercises() {
   const completed = storage.getCompletedExercises()
@@ -32,7 +33,14 @@ export default function Exercises() {
 
   return (
     <div className="min-h-screen bg-gray-100 py-8 px-4">
-      <div className="max-w-6xl mx-auto">
+      <div className="max-w-7xl mx-auto grid lg:grid-cols-4 gap-6">
+        {/* Sidebar */}
+        <div>
+          <TopicSidebar activeContentType="exercise" />
+        </div>
+
+        {/* Main Content */}
+        <div className="lg:col-span-3">
         <div className="mb-8">
           <h1 className="text-4xl font-bold text-gray-800 mb-2">📝 תרגילים</h1>
           <p className="text-gray-600">
@@ -109,6 +117,7 @@ export default function Exercises() {
             <p className="text-gray-700">אין תרגילים זמינים כרגע</p>
           </div>
         )}
+        </div>
       </div>
     </div>
   )
