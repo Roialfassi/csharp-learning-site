@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
-import Editor from '@monaco-editor/react'
+import Editor, { useMonaco } from '@monaco-editor/react'
 import { Play, Trash2, Download, Copy } from 'lucide-react'
 import { executeCode } from '../utils/codeExecutor'
 import { storage } from '../utils/storage'
@@ -10,6 +10,16 @@ interface ExecutionOutput {
   isRunning: boolean
 }
 
+const DEFAULT_CODE = `using System;
+
+class Program
+{
+    static void Main()
+    {
+        Console.WriteLine("שלום עולם!");
+    }
+}`
+
 export default function ConsolePlayground() {
   const [code, setCode] = useState<string>('')
   const [output, setOutput] = useState<ExecutionOutput>({
@@ -17,12 +27,34 @@ export default function ConsolePlayground() {
     stderr: '',
     isRunning: false,
   })
+  const [fontSize, setFontSize] = useState(14)
+  const [wordWrap, setWordWrap] = useState(true)
+  const [theme, setTheme] = useState<'vs-dark' | 'vs-light'>('vs-dark')
   const autoSaveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const monaco = useMonaco()
+
+  // Configure Monaco on first mount
+  useEffect(() => {
+    if (monaco) {
+      monaco.editor.defineTheme('custom-dark', {
+        base: 'vs-dark',
+        inherit: true,
+        rules: [],
+        colors: {
+          'editor.background': '#1e1e1e',
+        },
+      })
+    }
+  }, [monaco])
 
   // Load code from storage on mount
   useEffect(() => {
     const savedCode = storage.getPlaygroundCode()
-    setCode(savedCode)
+    if (savedCode && savedCode.length > 0) {
+      setCode(savedCode)
+    } else {
+      setCode(DEFAULT_CODE)
+    }
   }, [])
 
   // Auto-save code
@@ -32,8 +64,10 @@ export default function ConsolePlayground() {
     }
 
     autoSaveTimerRef.current = setTimeout(() => {
-      storage.savePlaygroundCode(code)
-    }, 2000)
+      if (code && code.length > 0) {
+        storage.savePlaygroundCode(code)
+      }
+    }, 1500)
 
     return () => {
       if (autoSaveTimerRef.current) {
@@ -62,12 +96,17 @@ export default function ConsolePlayground() {
   }
 
   const handleClear = () => {
-    setCode('')
+    setCode(DEFAULT_CODE)
     setOutput({ stdout: '', stderr: '', isRunning: false })
   }
 
-  const handleCopy = () => {
-    navigator.clipboard.writeText(code)
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(code)
+      alert('קוד הועתק ללוח')
+    } catch {
+      alert('שגיאה בהעתקה')
+    }
   }
 
   const handleDownload = () => {
@@ -78,6 +117,10 @@ export default function ConsolePlayground() {
     document.body.appendChild(element)
     element.click()
     document.body.removeChild(element)
+  }
+
+  const handleLoadExample = (example: string) => {
+    setCode(example)
   }
 
   return (
@@ -114,45 +157,142 @@ export default function ConsolePlayground() {
                 </button>
               </div>
             </div>
-            <div className="flex-1 min-h-96">
+            <div className="flex-1" style={{ height: '500px' }}>
               <Editor
                 height="100%"
                 language="csharp"
                 value={code}
                 onChange={(value) => setCode(value || '')}
-                theme="vs-dark"
+                theme={theme}
                 options={{
-                  minimap: { enabled: false },
-                  fontSize: 14,
+                  // Layout
+                  minimap: { enabled: true, maxColumn: 120 },
                   scrollBeyondLastLine: false,
-                  automaticLayout: true,
+                  wordWrap: wordWrap ? 'on' : 'off',
+                  lineNumbers: 'on',
+                  glyphMargin: true,
+
+                  // Editing
+                  fontSize: fontSize,
                   tabSize: 4,
+                  insertSpaces: true,
+                  automaticLayout: true,
+
+                  // IntelliSense and Formatting
+                  quickSuggestions: {
+                    other: true,
+                    comments: false,
+                    strings: false,
+                  },
+                  acceptSuggestionOnCommitCharacter: true,
+
+                  // Code formatting
+                  formatOnPaste: true,
+                  formatOnType: true,
+                  autoClosingBrackets: 'always',
+                  autoClosingQuotes: 'always',
+                  autoIndent: 'full',
+
+                  // Appearance
+                  renderWhitespace: 'selection',
+
+                  // Keyboard shortcuts
+                  copyWithSyntaxHighlighting: true,
+                  showUnused: true,
+
+                  // Performance
+                  renderLineHighlight: 'line',
+                  occurrencesHighlight: 'singleFile',
+                  selectionHighlight: true,
+
+                  // Code folding
+                  codeLens: true,
+                  folding: true,
+                  foldingHighlight: true,
+                  foldingImportsByDefault: false,
+                }}
+                onMount={(editor) => {
+                  // Set initial focus
+                  editor.focus()
                 }}
               />
             </div>
 
             {/* Control Buttons */}
-            <div className="bg-gray-100 px-6 py-4 flex gap-3 border-t">
-              <button
-                onClick={handleRun}
-                disabled={output.isRunning}
-                className="flex items-center gap-2 bg-green-600 text-white px-6 py-2 rounded font-semibold hover:bg-green-700 disabled:bg-gray-400 transition"
-              >
-                <Play size={18} />
-                הרץ
-              </button>
-              <button
-                onClick={handleClear}
-                className="flex items-center gap-2 bg-red-600 text-white px-6 py-2 rounded font-semibold hover:bg-red-700 transition"
-              >
-                <Trash2 size={18} />
-                נקה
-              </button>
-              {output.stdout || output.stderr ? (
-                <div className="text-sm text-gray-600 mr-auto">
-                  ✓ נשמר אוטומטית
+            <div className="bg-gray-100 px-6 py-4 space-y-3 border-t">
+              <div className="flex gap-3 flex-wrap items-center">
+                <button
+                  onClick={handleRun}
+                  disabled={output.isRunning}
+                  className="flex items-center gap-2 bg-green-600 text-white px-6 py-2 rounded font-semibold hover:bg-green-700 disabled:bg-gray-400 transition"
+                  title="הרץ קוד (Ctrl+Enter)"
+                >
+                  <Play size={18} />
+                  הרץ
+                </button>
+                <button
+                  onClick={handleClear}
+                  className="flex items-center gap-2 bg-red-600 text-white px-6 py-2 rounded font-semibold hover:bg-red-700 transition"
+                  title="נקה קוד"
+                >
+                  <Trash2 size={18} />
+                  נקה
+                </button>
+                <button
+                  onClick={handleCopy}
+                  className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded font-semibold hover:bg-blue-700 transition text-sm"
+                  title="העתק קוד"
+                >
+                  <Copy size={16} />
+                  העתק
+                </button>
+                <button
+                  onClick={handleDownload}
+                  className="flex items-center gap-2 bg-purple-600 text-white px-4 py-2 rounded font-semibold hover:bg-purple-700 transition text-sm"
+                  title="הורד קוד"
+                >
+                  <Download size={16} />
+                  הורד
+                </button>
+                {output.stdout || output.stderr ? (
+                  <div className="text-sm text-green-700 font-semibold ml-auto">
+                    ✓ נשמר אוטומטית
+                  </div>
+                ) : null}
+              </div>
+
+              {/* Editor Settings */}
+              <div className="flex gap-4 items-center text-sm bg-white p-3 rounded border border-gray-300">
+                <div className="flex items-center gap-2">
+                  <label className="font-semibold text-gray-700">גודל גופן:</label>
+                  <input
+                    type="range"
+                    min="10"
+                    max="20"
+                    value={fontSize}
+                    onChange={(e) => setFontSize(parseInt(e.target.value))}
+                    className="w-24"
+                  />
+                  <span className="text-gray-600 w-8">{fontSize}px</span>
                 </div>
-              ) : null}
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={wordWrap}
+                    onChange={(e) => setWordWrap(e.target.checked)}
+                    className="w-4 h-4"
+                  />
+                  <span className="font-semibold text-gray-700">גלילת טקסט</span>
+                </label>
+                <select
+                  value={theme}
+                  onChange={(e) => setTheme(e.target.value as 'vs-dark' | 'vs-light')}
+                  className="px-3 py-1 border border-gray-300 rounded bg-white text-gray-800"
+                >
+                  <option value="vs-dark">כהה</option>
+                  <option value="vs-light">בהיר</option>
+                </select>
+              </div>
             </div>
           </div>
 
@@ -197,39 +337,180 @@ export default function ConsolePlayground() {
           </div>
         </div>
 
-        {/* Documentation */}
-        <div className="mt-8 bg-white rounded-lg shadow p-6">
-          <h3 className="text-2xl font-bold mb-4 text-gray-800">דוגמאות קוד</h3>
-          <div className="grid md:grid-cols-2 gap-4">
-            <div className="bg-gray-50 p-4 rounded">
-              <p className="font-semibold mb-2 text-gray-800">הדפסה פשוטה:</p>
-              <code className="text-sm bg-gray-900 text-green-400 p-2 rounded block overflow-x-auto">
-                Console.WriteLine("שלום עולם");
-              </code>
-            </div>
-            <div className="bg-gray-50 p-4 rounded">
-              <p className="font-semibold mb-2 text-gray-800">משתנים:</p>
-              <code className="text-sm bg-gray-900 text-green-400 p-2 rounded block overflow-x-auto">
-                {`int x = 5;
-Console.WriteLine(x);`}
-              </code>
-            </div>
-            <div className="bg-gray-50 p-4 rounded">
-              <p className="font-semibold mb-2 text-gray-800">לולאה:</p>
-              <code className="text-sm bg-gray-900 text-green-400 p-2 rounded block overflow-x-auto">
-                {`for(int i = 0; i < 3; i++)
-    Console.WriteLine(i);`}
-              </code>
-            </div>
-            <div className="bg-gray-50 p-4 rounded">
-              <p className="font-semibold mb-2 text-gray-800">תנאי:</p>
-              <code className="text-sm bg-gray-900 text-green-400 p-2 rounded block overflow-x-auto">
-                {`int x = 10;
-if(x > 5)
-    Console.WriteLine("גדול");`}
-              </code>
+        {/* Keyboard Shortcuts & Documentation */}
+        <div className="mt-8 grid md:grid-cols-2 gap-6">
+          {/* Keyboard Shortcuts */}
+          <div className="bg-white rounded-lg shadow p-6">
+            <h3 className="text-2xl font-bold mb-4 text-gray-800">⌨️ קיצורי מקלדת</h3>
+            <div className="space-y-2 text-sm">
+              <div className="flex justify-between">
+                <span className="text-gray-600">הרץ קוד:</span>
+                <kbd className="bg-gray-800 text-white px-2 py-1 rounded text-xs">Ctrl + Enter</kbd>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-600">עותק:</span>
+                <kbd className="bg-gray-800 text-white px-2 py-1 rounded text-xs">Ctrl + C</kbd>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-600">הדבק:</span>
+                <kbd className="bg-gray-800 text-white px-2 py-1 rounded text-xs">Ctrl + V</kbd>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-600">ביטול:</span>
+                <kbd className="bg-gray-800 text-white px-2 py-1 rounded text-xs">Ctrl + Z</kbd>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-600">חזרה:</span>
+                <kbd className="bg-gray-800 text-white px-2 py-1 rounded text-xs">Ctrl + Shift + Z</kbd>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-600">עיצוב קוד:</span>
+                <kbd className="bg-gray-800 text-white px-2 py-1 rounded text-xs">Ctrl + Shift + F</kbd>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-600">הערה:</span>
+                <kbd className="bg-gray-800 text-white px-2 py-1 rounded text-xs">Ctrl + /</kbd>
+              </div>
             </div>
           </div>
+
+          {/* Code Examples */}
+          <div className="bg-white rounded-lg shadow p-6">
+            <h3 className="text-2xl font-bold mb-4 text-gray-800">דוגמאות קוד - לחץ כדי לטעון</h3>
+            <div className="space-y-2">
+              <button
+                onClick={() =>
+                  handleLoadExample(
+                    `using System;
+
+class Program
+{
+    static void Main()
+    {
+        Console.WriteLine("שלום עולם!");
+    }
+}`
+                  )
+                }
+                className="w-full text-right bg-gray-50 hover:bg-blue-50 p-3 rounded border border-gray-200 hover:border-blue-400 transition text-sm font-semibold text-gray-800"
+              >
+                ✏️ הדפסה פשוטה
+              </button>
+              <button
+                onClick={() =>
+                  handleLoadExample(
+                    `using System;
+
+class Program
+{
+    static void Main()
+    {
+        int x = 5;
+        double y = 3.14;
+        string name = "אני";
+        bool flag = true;
+
+        Console.WriteLine($"x = {x}");
+        Console.WriteLine($"y = {y}");
+        Console.WriteLine($"name = {name}");
+        Console.WriteLine($"flag = {flag}");
+    }
+}`
+                  )
+                }
+                className="w-full text-right bg-gray-50 hover:bg-blue-50 p-3 rounded border border-gray-200 hover:border-blue-400 transition text-sm font-semibold text-gray-800"
+              >
+                📝 משתנים וטיפוסים
+              </button>
+              <button
+                onClick={() =>
+                  handleLoadExample(
+                    `using System;
+
+class Program
+{
+    static void Main()
+    {
+        for(int i = 1; i <= 5; i++)
+        {
+            Console.WriteLine($"מספר: {i}");
+        }
+    }
+}`
+                  )
+                }
+                className="w-full text-right bg-gray-50 hover:bg-blue-50 p-3 rounded border border-gray-200 hover:border-blue-400 transition text-sm font-semibold text-gray-800"
+              >
+                🔁 לולאת For
+              </button>
+              <button
+                onClick={() =>
+                  handleLoadExample(
+                    `using System;
+
+class Program
+{
+    static void Main()
+    {
+        int x = 10;
+        if(x > 5)
+        {
+            Console.WriteLine("x גדול מ-5");
+        }
+        else if(x == 5)
+        {
+            Console.WriteLine("x שווה ל-5");
+        }
+        else
+        {
+            Console.WriteLine("x קטן מ-5");
+        }
+    }
+}`
+                  )
+                }
+                className="w-full text-right bg-gray-50 hover:bg-blue-50 p-3 rounded border border-gray-200 hover:border-blue-400 transition text-sm font-semibold text-gray-800"
+              >
+                ✅ תנאים (If/Else)
+              </button>
+              <button
+                onClick={() =>
+                  handleLoadExample(
+                    `using System;
+
+class Program
+{
+    static int Add(int a, int b)
+    {
+        return a + b;
+    }
+
+    static void Main()
+    {
+        int result = Add(5, 3);
+        Console.WriteLine($"5 + 3 = {result}");
+    }
+}`
+                  )
+                }
+                className="w-full text-right bg-gray-50 hover:bg-blue-50 p-3 rounded border border-gray-200 hover:border-blue-400 transition text-sm font-semibold text-gray-800"
+              >
+                🔧 מתודות
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Keyboard Shortcuts Info */}
+        <div className="mt-6 bg-blue-50 border-r-4 border-blue-600 p-6 rounded">
+          <h3 className="text-lg font-bold mb-2 text-blue-900">💡 טיפים</h3>
+          <ul className="text-blue-800 text-sm space-y-1">
+            <li>✨ העורך יתעד את הקוד שלך אוטומטית כל 1.5 שניות</li>
+            <li>🎯 בחרו דוגמה מהרשימה לימין כדי להטעין קוד</li>
+            <li>⌨️ השתמשו בקיצורי מקלדת ל-IDE חופשיות</li>
+            <li>📋 תוכלו להעתיק, להוריד, וליצור קבצים חדשים</li>
+            <li>🎨 שנו את גודל הגופן וה-theme כדי שתרגישו בנוח</li>
+          </ul>
         </div>
       </div>
     </div>
