@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import Navbar from './components/Navbar'
 import LandingPage from './pages/LandingPage'
+import Dashboard from './pages/Dashboard'
 import ConsolePlayground from './pages/ConsolePlayground'
 import Exercises from './pages/Exercises'
 import ExerciseDetail from './pages/ExerciseDetail'
@@ -15,6 +16,7 @@ function App() {
         <Navbar />
         <Routes>
           <Route path="/" element={<LandingPage />} />
+          <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/path" element={<LearningPath />} />
           <Route path="/playground" element={<ConsolePlayground />} />
           <Route path="/exercises" element={<Exercises />} />
