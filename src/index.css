@@ -1,0 +1,25 @@
+@import "tailwindcss";
+
+* {
+  direction: rtl;
+  text-align: right;
+}
+
+/* Allow LTR for code elements */
+code,
+pre,
+.code-block,
+.code-editor {
+  direction: ltr;
+  text-align: left;
+}
+
+body {
+  font-family: 'Rubik', 'Assistant', 'Heebo', sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}

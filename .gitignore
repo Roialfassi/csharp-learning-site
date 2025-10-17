@@ -416,3 +416,13 @@ FodyWeavers.xsd
 *.msix
 *.msm
 *.msp
+
+# Node.js
+node_modules/
+dist/
+*.log
+npm-debug.log*
+
+# Environment
+.env.local
+.env.*.local
