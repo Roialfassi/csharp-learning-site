@@ -3,6 +3,7 @@ import Navbar from './components/Navbar'
 import LandingPage from './pages/LandingPage'
 import ConsolePlayground from './pages/ConsolePlayground'
 import Exercises from './pages/Exercises'
+import ExerciseDetail from './pages/ExerciseDetail'
 import Quizzes from './pages/Quizzes'
 
 function App() {
@@ -14,6 +15,7 @@ function App() {
           <Route path="/" element={<LandingPage />} />
           <Route path="/playground" element={<ConsolePlayground />} />
           <Route path="/exercises" element={<Exercises />} />
+          <Route path="/exercise/:id" element={<ExerciseDetail />} />
           <Route path="/quizzes" element={<Quizzes />} />
         </Routes>
       </div>
