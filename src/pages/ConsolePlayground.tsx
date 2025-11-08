@@ -1,8 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import Editor, { useMonaco } from '@monaco-editor/react'
 import { Play, Trash2, Download, Copy } from 'lucide-react'
-import { executeCode } from '../utils/codeExecutor'
-import { storage } from '../utils/storage'
 
 interface ExecutionOutput {
   stdout: string
@@ -20,6 +18,47 @@ class Program
     }
 }`
 
+// Mock storage utility
+const storage = {
+  getPlaygroundCode: () => {
+    try {
+      return localStorage.getItem('playground-code') || ''
+    } catch {
+      return ''
+    }
+  },
+  savePlaygroundCode: (code: string) => {
+    try {
+      localStorage.setItem('playground-code', code)
+    } catch (e) {
+      console.error('Failed to save code:', e)
+    }
+  }
+}
+
+// Mock code executor
+const executeCode = async (code: string) => {
+  // This is a mock - in real implementation, you'd call a backend API
+  await new Promise(resolve => setTimeout(resolve, 1000))
+  
+  // Simple mock output
+  if (code.includes('Console.WriteLine')) {
+    const matches = code.match(/Console\.WriteLine\("(.+?)"\)/g)
+    if (matches) {
+      const outputs = matches.map(match => {
+        const text = match.match(/"(.+?)"/)?.[1] || ''
+        return text
+      })
+      return { stdout: outputs.join('\n'), stderr: '' }
+    }
+  }
+  
+  return { 
+    stdout: 'הקוד הורץ בהצלחה!\n(זוהי דוגמה - חבר ל-API אמיתי להרצת C#)', 
+    stderr: '' 
+  }
+}
+
 export default function ConsolePlayground() {
   const [code, setCode] = useState<string>('')
   const [output, setOutput] = useState<ExecutionOutput>({
@@ -30,7 +69,9 @@ export default function ConsolePlayground() {
   const [fontSize, setFontSize] = useState(14)
   const [wordWrap, setWordWrap] = useState(true)
   const [theme, setTheme] = useState<'vs-dark' | 'vs-light'>('vs-dark')
+  const [autoSaved, setAutoSaved] = useState(false)
   const autoSaveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const editorRef = useRef<any>(null)
   const monaco = useMonaco()
 
   // Configure Monaco on first mount
@@ -63,9 +104,12 @@ export default function ConsolePlayground() {
       clearTimeout(autoSaveTimerRef.current)
     }
 
+    setAutoSaved(false)
+
     autoSaveTimerRef.current = setTimeout(() => {
       if (code && code.length > 0) {
         storage.savePlaygroundCode(code)
+        setAutoSaved(true)
       }
     }, 1500)
 
@@ -89,7 +133,7 @@ export default function ConsolePlayground() {
     } catch (error) {
       setOutput({
         stdout: '',
-        stderr: 'שגיאה בלתי צפויה בהרצת הקוד',
+        stderr: `שגיאה בלתי צפויה בהרצת הקוד: ${error instanceof Error ? error.message : 'Unknown error'}`,
         isRunning: false,
       })
     }
@@ -121,6 +165,15 @@ export default function ConsolePlayground() {
 
   const handleLoadExample = (example: string) => {
     setCode(example)
+  }
+
+  const handleEditorDidMount = (editor: any) => {
+    editorRef.current = editor
+    
+
+    
+    // Set initial focus
+    editor.focus()
   }
 
   return (
@@ -165,56 +218,38 @@ export default function ConsolePlayground() {
                 onChange={(value) => setCode(value || '')}
                 theme={theme}
                 options={{
-                  // Layout
                   minimap: { enabled: true, maxColumn: 120 },
                   scrollBeyondLastLine: false,
                   wordWrap: wordWrap ? 'on' : 'off',
                   lineNumbers: 'on',
                   glyphMargin: true,
-
-                  // Editing
                   fontSize: fontSize,
                   tabSize: 4,
                   insertSpaces: true,
                   automaticLayout: true,
-
-                  // IntelliSense and Formatting
                   quickSuggestions: {
                     other: true,
                     comments: false,
                     strings: false,
                   },
                   acceptSuggestionOnCommitCharacter: true,
-
-                  // Code formatting
                   formatOnPaste: true,
                   formatOnType: true,
                   autoClosingBrackets: 'always',
                   autoClosingQuotes: 'always',
                   autoIndent: 'full',
-
-                  // Appearance
                   renderWhitespace: 'selection',
-
-                  // Keyboard shortcuts
                   copyWithSyntaxHighlighting: true,
                   showUnused: true,
-
-                  // Performance
                   renderLineHighlight: 'line',
                   occurrencesHighlight: 'singleFile',
                   selectionHighlight: true,
-
-                  // Code folding
                   codeLens: true,
                   folding: true,
                   foldingHighlight: true,
                   foldingImportsByDefault: false,
                 }}
-                onMount={(editor) => {
-                  // Set initial focus
-                  editor.focus()
-                }}
+                onMount={handleEditorDidMount}
               />
             </div>
 
@@ -254,11 +289,11 @@ export default function ConsolePlayground() {
                   <Download size={16} />
                   הורד
                 </button>
-                {output.stdout || output.stderr ? (
+                {autoSaved && (
                   <div className="text-sm text-green-700 font-semibold ml-auto">
                     ✓ נשמר אוטומטית
                   </div>
-                ) : null}
+                )}
               </div>
 
               {/* Editor Settings */}
@@ -303,7 +338,7 @@ export default function ConsolePlayground() {
             </div>
 
             {/* Output Display */}
-            <div className="flex-1 bg-black text-green-400 font-code text-sm p-6 overflow-auto min-h-96">
+            <div className="flex-1 bg-black text-green-400 font-mono text-sm p-6 overflow-auto min-h-96">
               {output.isRunning ? (
                 <div className="flex items-center gap-2">
                   <div className="animate-spin">⏳</div>
@@ -312,10 +347,10 @@ export default function ConsolePlayground() {
               ) : output.stderr ? (
                 <div className="text-red-400">
                   <div className="font-bold mb-2">❌ שגיאה:</div>
-                  <pre className="whitespace-pre-wrap break-words">{output.stderr}</pre>
+                  <pre className="whitespace-pre-wrap break-words font-mono">{output.stderr}</pre>
                 </div>
               ) : output.stdout ? (
-                <pre className="whitespace-pre-wrap break-words">{output.stdout}</pre>
+                <pre className="whitespace-pre-wrap break-words font-mono">{output.stdout}</pre>
               ) : (
                 <div className="text-gray-500">
                   הפלט יופיע כאן...
@@ -501,13 +536,13 @@ class Program
           </div>
         </div>
 
-        {/* Keyboard Shortcuts Info */}
+        {/* Tips Section */}
         <div className="mt-6 bg-blue-50 border-r-4 border-blue-600 p-6 rounded">
           <h3 className="text-lg font-bold mb-2 text-blue-900">💡 טיפים</h3>
           <ul className="text-blue-800 text-sm space-y-1">
-            <li>✨ העורך יתעד את הקוד שלך אוטומטית כל 1.5 שניות</li>
+            <li>✨ העורך ישמור את הקוד שלך אוטומטית כל 1.5 שניות</li>
             <li>🎯 בחרו דוגמה מהרשימה לימין כדי להטעין קוד</li>
-            <li>⌨️ השתמשו בקיצורי מקלדת ל-IDE חופשיות</li>
+            <li>⌨️ השתמשו בקיצורי מקלדת לחוויה טובה יותר</li>
             <li>📋 תוכלו להעתיק, להוריד, וליצור קבצים חדשים</li>
             <li>🎨 שנו את גודל הגופן וה-theme כדי שתרגישו בנוח</li>
           </ul>
