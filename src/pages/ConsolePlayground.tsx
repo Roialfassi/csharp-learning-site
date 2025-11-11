@@ -195,48 +195,51 @@ export default function ConsolePlayground() {
                 </button>
               </div>
             </div>
-            <div className="flex-1 flex flex-col" style={{ minHeight: 0 }}>
-              <Editor
-                height="100%"
-                width="100%"
-                language="csharp"
-                value={code}
-                onChange={(value) => setCode(value || '')}
-                theme={theme}
-                options={{
-                  minimap: { enabled: true, maxColumn: 120 },
-                  scrollBeyondLastLine: false,
-                  wordWrap: wordWrap ? 'on' : 'off',
-                  lineNumbers: 'on',
-                  glyphMargin: true,
-                  fontSize: fontSize,
-                  tabSize: 4,
-                  insertSpaces: true,
-                  automaticLayout: true,
-                  quickSuggestions: {
-                    other: true,
-                    comments: false,
-                    strings: false,
-                  },
-                  acceptSuggestionOnCommitCharacter: true,
-                  formatOnPaste: true,
-                  formatOnType: true,
-                  autoClosingBrackets: 'always',
-                  autoClosingQuotes: 'always',
-                  autoIndent: 'full',
-                  renderWhitespace: 'selection',
-                  copyWithSyntaxHighlighting: true,
-                  showUnused: true,
-                  renderLineHighlight: 'line',
-                  occurrencesHighlight: 'singleFile',
-                  selectionHighlight: true,
-                  codeLens: true,
-                  folding: true,
-                  foldingHighlight: true,
-                  foldingImportsByDefault: false,
-                }}
-                onMount={handleEditorDidMount}
-              />
+            <div className="flex-1" style={{ position: 'relative' }}>
+              <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }}>
+                <Editor
+                  height="100%"
+                  width="100%"
+                  language="csharp"
+                  value={code}
+                  onChange={(value) => setCode(value || '')}
+                  theme={theme}
+                  options={{
+                    readOnly: false,
+                    minimap: { enabled: true, maxColumn: 120 },
+                    scrollBeyondLastLine: false,
+                    wordWrap: wordWrap ? 'on' : 'off',
+                    lineNumbers: 'on',
+                    glyphMargin: true,
+                    fontSize: fontSize,
+                    tabSize: 4,
+                    insertSpaces: true,
+                    automaticLayout: true,
+                    quickSuggestions: {
+                      other: true,
+                      comments: false,
+                      strings: false,
+                    },
+                    acceptSuggestionOnCommitCharacter: true,
+                    formatOnPaste: true,
+                    formatOnType: true,
+                    autoClosingBrackets: 'always',
+                    autoClosingQuotes: 'always',
+                    autoIndent: 'full',
+                    renderWhitespace: 'selection',
+                    copyWithSyntaxHighlighting: true,
+                    showUnused: true,
+                    renderLineHighlight: 'line',
+                    occurrencesHighlight: 'singleFile',
+                    selectionHighlight: true,
+                    codeLens: true,
+                    folding: true,
+                    foldingHighlight: true,
+                    foldingImportsByDefault: false,
+                  }}
+                  onMount={handleEditorDidMount}
+                />
+              </div>
             </div>
 
             {/* Control Buttons */}
