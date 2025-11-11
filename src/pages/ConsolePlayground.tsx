@@ -195,9 +195,10 @@ export default function ConsolePlayground() {
                 </button>
               </div>
             </div>
-            <div className="flex-1 overflow-hidden">
+            <div className="flex-1 flex flex-col" style={{ minHeight: 0 }}>
               <Editor
                 height="100%"
+                width="100%"
                 language="csharp"
                 value={code}
                 onChange={(value) => setCode(value || '')}
