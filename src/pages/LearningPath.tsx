@@ -155,15 +155,49 @@ export default function LearningPath() {
     }
   }
 
+  // Calculate overall progress
+  const totalExercises = exercises.length
+  const totalQuizzes = quizzes.length
+  const totalTasks = totalExercises + totalQuizzes
+  const completedTasks = completedExercises.length + Object.keys(quizProgress).length
+  const overallProgress = Math.round((completedTasks / totalTasks) * 100)
+
   return (
-    <div className="min-h-screen bg-gray-100 py-8 px-4">
-      <div className="max-w-4xl mx-auto">
+    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-gray-100 py-8 px-4">
+      <div className="max-w-5xl mx-auto">
         {/* Header */}
         <div className="mb-12 text-center">
-          <h1 className="text-5xl font-bold text-gray-800 mb-4">🎯 המסלול המלא</h1>
-          <p className="text-xl text-gray-600">
-            מסלול למידה מובנה מיסודות וכל ל-OOP מתקדמות
+          <h1 className="text-5xl font-bold text-gray-800 mb-4">🎓 מסלול הלמידה המלא</h1>
+          <p className="text-xl text-gray-600 mb-6">
+            מיסודות C# ועד תכנות מונחה עצמים - מסלול מובנה צעד אחר צעד
           </p>
+
+          {/* Overall Progress Bar */}
+          <div className="bg-white rounded-lg shadow-lg p-6 max-w-2xl mx-auto">
+            <div className="flex justify-between items-center mb-3">
+              <span className="text-lg font-bold text-gray-800">ההתקדמות הכוללת שלך</span>
+              <span className="text-3xl font-bold text-blue-600">{overallProgress}%</span>
+            </div>
+            <div className="w-full bg-gray-200 rounded-full h-4 mb-3">
+              <div
+                className="bg-gradient-to-r from-blue-500 to-purple-600 h-4 rounded-full transition-all duration-500"
+                style={{ width: `${overallProgress}%` }}
+              />
+            </div>
+            <div className="flex justify-between text-sm text-gray-600">
+              <span>{completedTasks} מתוך {totalTasks} משימות הושלמו</span>
+              <span>{topics.filter((_, idx) => {
+                const stats = getTopicStats(topics[idx])
+                return stats.completedTasks === stats.totalTasks && stats.totalTasks > 0
+              }).length} מתוך {topics.length} נושאים הושלמו</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Course Steps Title */}
+        <div className="mb-8">
+          <h2 className="text-3xl font-bold text-gray-800 text-center mb-2">📚 שלבי הקורס</h2>
+          <p className="text-center text-gray-600">עברו דרך כל שלב לפי הסדר - כל שלב בונה על הקודם</p>
         </div>
 
         {/* Learning Path */}
@@ -174,15 +208,28 @@ export default function LearningPath() {
             const isInProgress = stats.completedTasks > 0 && !isCompleted
 
             return (
-              <div key={topic.id}>
+              <div key={topic.id} className="relative">
+                {/* Step Number Badge */}
+                <div className="absolute -right-4 top-8 z-10">
+                  <div className={`w-16 h-16 rounded-full flex items-center justify-center font-bold text-xl shadow-lg ${
+                    isCompleted
+                      ? 'bg-green-500 text-white'
+                      : isInProgress
+                        ? 'bg-blue-500 text-white'
+                        : 'bg-gray-300 text-gray-700'
+                  }`}>
+                    {isCompleted ? '✓' : index + 1}
+                  </div>
+                </div>
+
                 {/* Topic Card */}
                 <div
-                  className={`rounded-lg shadow-lg p-6 transition ${
+                  className={`rounded-lg shadow-xl p-8 transition mr-8 ${
                     isCompleted
-                      ? 'bg-green-50 border-r-4 border-green-600'
+                      ? 'bg-gradient-to-br from-green-50 to-green-100 border-r-4 border-green-600'
                       : isInProgress
-                        ? 'bg-blue-50 border-r-4 border-blue-600'
-                        : 'bg-white border-r-4 border-gray-300'
+                        ? 'bg-gradient-to-br from-blue-50 to-blue-100 border-r-4 border-blue-600'
+                        : 'bg-white border-r-4 border-gray-300 hover:shadow-2xl hover:border-blue-400'
                   }`}
                 >
                   <div className="flex items-start gap-4">
@@ -293,10 +340,15 @@ export default function LearningPath() {
                   </div>
                 </div>
 
-                {/* Arrow Between Topics */}
+                {/* Connector Between Steps */}
                 {index < topics.length - 1 && (
-                  <div className="flex justify-center py-4">
-                    <div className="w-1 h-8 bg-gradient-to-b from-gray-400 to-gray-300" />
+                  <div className="flex justify-center py-6 relative">
+                    <div className="w-1 h-12 bg-gradient-to-b from-blue-400 via-purple-400 to-blue-400 rounded-full" />
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <div className="bg-white px-3 py-1 rounded-full text-xs text-gray-600 shadow">
+                        ↓
+                      </div>
+                    </div>
                   </div>
                 )}
               </div>
@@ -304,34 +356,91 @@ export default function LearningPath() {
           })}
         </div>
 
-        {/* Overall Stats */}
-        <div className="mt-12 bg-white rounded-lg shadow-lg p-8">
-          <h3 className="text-2xl font-bold text-gray-800 mb-6">סטטיסטיקת כללית</h3>
+        {/* Achievement Stats */}
+        <div className="mt-16">
+          <h3 className="text-3xl font-bold text-gray-800 text-center mb-8">🏆 ההישגים שלך</h3>
           <div className="grid md:grid-cols-3 gap-6">
-            <div className="text-center">
-              <div className="text-4xl font-bold text-green-600 mb-2">
-                {completedExercises.length}/{exercises.length}
+            {/* Exercises Completed */}
+            <div className="bg-white rounded-xl shadow-lg p-8 text-center transform hover:scale-105 transition border-t-4 border-green-500">
+              <div className="text-6xl mb-4">📝</div>
+              <div className="text-5xl font-bold text-green-600 mb-2">
+                {completedExercises.length}
               </div>
-              <p className="text-gray-600">תרגילים שהושלמו</p>
+              <p className="text-gray-600 text-lg mb-2">תרגילים הושלמו</p>
+              <div className="text-sm text-gray-500">מתוך {exercises.length} תרגילים</div>
+              <div className="mt-4 w-full bg-gray-200 rounded-full h-2">
+                <div
+                  className="bg-green-500 h-2 rounded-full transition-all"
+                  style={{ width: `${(completedExercises.length / exercises.length) * 100}%` }}
+                />
+              </div>
             </div>
-            <div className="text-center">
-              <div className="text-4xl font-bold text-purple-600 mb-2">
-                {Object.keys(quizProgress).length}/{quizzes.length}
+
+            {/* Quizzes Completed */}
+            <div className="bg-white rounded-xl shadow-lg p-8 text-center transform hover:scale-105 transition border-t-4 border-purple-500">
+              <div className="text-6xl mb-4">🎯</div>
+              <div className="text-5xl font-bold text-purple-600 mb-2">
+                {Object.keys(quizProgress).length}
               </div>
-              <p className="text-gray-600">חידונים שבוצעו</p>
+              <p className="text-gray-600 text-lg mb-2">חידונים בוצעו</p>
+              <div className="text-sm text-gray-500">מתוך {quizzes.length} חידונים</div>
+              <div className="mt-4 w-full bg-gray-200 rounded-full h-2">
+                <div
+                  className="bg-purple-500 h-2 rounded-full transition-all"
+                  style={{ width: `${(Object.keys(quizProgress).length / quizzes.length) * 100}%` }}
+                />
+              </div>
             </div>
-            <div className="text-center">
-              <div className="text-4xl font-bold text-blue-600 mb-2">
-                {Math.round(
-                  ((completedExercises.length + Object.keys(quizProgress).length) /
-                    (exercises.length + quizzes.length)) *
-                    100
-                )}
-                %
+
+            {/* Overall Progress */}
+            <div className="bg-white rounded-xl shadow-lg p-8 text-center transform hover:scale-105 transition border-t-4 border-blue-500">
+              <div className="text-6xl mb-4">🎓</div>
+              <div className="text-5xl font-bold text-blue-600 mb-2">
+                {overallProgress}%
               </div>
-              <p className="text-gray-600">התקדמות כוללת</p>
+              <p className="text-gray-600 text-lg mb-2">התקדמות כוללת</p>
+              <div className="text-sm text-gray-500">{completedTasks} מתוך {totalTasks} משימות</div>
+              <div className="mt-4 w-full bg-gray-200 rounded-full h-2">
+                <div
+                  className="bg-gradient-to-r from-blue-500 to-purple-500 h-2 rounded-full transition-all"
+                  style={{ width: `${overallProgress}%` }}
+                />
+              </div>
             </div>
           </div>
+
+          {/* Motivational Message */}
+          {overallProgress === 100 ? (
+            <div className="mt-8 bg-gradient-to-r from-green-400 to-blue-500 text-white rounded-xl shadow-lg p-8 text-center">
+              <div className="text-6xl mb-4">🎉</div>
+              <h4 className="text-3xl font-bold mb-2">מזל טוב! סיימת את כל הקורס!</h4>
+              <p className="text-xl">עכשיו אתם מומחים ב-C#! 🚀</p>
+            </div>
+          ) : overallProgress >= 75 ? (
+            <div className="mt-8 bg-blue-50 border-r-4 border-blue-500 rounded-lg p-6 text-center">
+              <p className="text-xl text-gray-700">
+                <span className="font-bold">כמעט שם!</span> רק עוד {100 - overallProgress}% וסיימתם את הקורס המלא! 💪
+              </p>
+            </div>
+          ) : overallProgress >= 50 ? (
+            <div className="mt-8 bg-purple-50 border-r-4 border-purple-500 rounded-lg p-6 text-center">
+              <p className="text-xl text-gray-700">
+                <span className="font-bold">חצי דרך!</span> אתם עושים עבודה מצוינת! המשיכו כך! 🌟
+              </p>
+            </div>
+          ) : overallProgress > 0 ? (
+            <div className="mt-8 bg-green-50 border-r-4 border-green-500 rounded-lg p-6 text-center">
+              <p className="text-xl text-gray-700">
+                <span className="font-bold">התחלה מצוינת!</span> המשיכו ללמוד ותתקדמו במהירות! 🚀
+              </p>
+            </div>
+          ) : (
+            <div className="mt-8 bg-yellow-50 border-r-4 border-yellow-500 rounded-lg p-6 text-center">
+              <p className="text-xl text-gray-700">
+                <span className="font-bold">מוכנים להתחיל?</span> התחילו מהשלב הראשון ובנו את היסודות שלכם! 📚
+              </p>
+            </div>
+          )}
         </div>
       </div>
     </div>

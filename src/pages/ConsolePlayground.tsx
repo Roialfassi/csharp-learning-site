@@ -11,11 +11,15 @@ interface ExecutionOutput {
 
 const DEFAULT_CODE = `using System;
 
-class Program
+namespace MyProgram
 {
-    static void Main()
+    class Program
     {
-        Console.WriteLine("שלום עולם!");
+        static void Main(string[] args)
+        {
+            // כתבו את הקוד שלכם כאן
+            Console.WriteLine("שלום עולם!");
+        }
     }
 }`
 
@@ -169,10 +173,10 @@ export default function ConsolePlayground() {
           </p>
         </div>
 
-        <div className="grid lg:grid-cols-2 gap-6">
+        <div className="grid lg:grid-cols-2 gap-6" style={{ height: 'calc(100vh - 300px)', minHeight: '700px' }}>
           {/* Code Editor */}
-          <div className="bg-white rounded-lg shadow-lg overflow-hidden flex flex-col">
-            <div className="bg-gray-800 text-white px-6 py-4 flex justify-between items-center">
+          <div className="bg-white rounded-lg shadow-lg overflow-hidden flex flex-col h-full">
+            <div className="bg-gray-800 text-white px-6 py-4 flex justify-between items-center flex-shrink-0">
               <h2 className="text-lg font-bold">עורך קוד</h2>
               <div className="flex gap-2">
                 <button
@@ -191,7 +195,7 @@ export default function ConsolePlayground() {
                 </button>
               </div>
             </div>
-            <div className="flex-1" style={{ height: '500px' }}>
+            <div className="flex-1 overflow-hidden">
               <Editor
                 height="100%"
                 language="csharp"
@@ -313,13 +317,13 @@ export default function ConsolePlayground() {
           </div>
 
           {/* Output Console */}
-          <div className="bg-white rounded-lg shadow-lg overflow-hidden flex flex-col">
-            <div className="bg-black text-white px-6 py-4">
+          <div className="bg-white rounded-lg shadow-lg overflow-hidden flex flex-col h-full">
+            <div className="bg-black text-white px-6 py-4 flex-shrink-0">
               <h2 className="text-lg font-bold">פלט</h2>
             </div>
 
             {/* Output Display */}
-            <div className="flex-1 bg-black text-green-400 font-mono text-sm p-6 overflow-auto min-h-96">
+            <div className="flex-1 bg-black text-green-400 font-mono text-sm p-6 overflow-auto">
               {output.isRunning ? (
                 <div className="flex items-center gap-2">
                   <div className="animate-spin">⏳</div>
@@ -399,11 +403,15 @@ export default function ConsolePlayground() {
                   handleLoadExample(
                     `using System;
 
-class Program
+namespace MyProgram
 {
-    static void Main()
+    class Program
     {
-        Console.WriteLine("שלום עולם!");
+        static void Main(string[] args)
+        {
+            // כתבו את הקוד שלכם כאן
+            Console.WriteLine("שלום עולם!");
+        }
     }
 }`
                   )
@@ -417,19 +425,23 @@ class Program
                   handleLoadExample(
                     `using System;
 
-class Program
+namespace MyProgram
 {
-    static void Main()
+    class Program
     {
-        int x = 5;
-        double y = 3.14;
-        string name = "אני";
-        bool flag = true;
+        static void Main(string[] args)
+        {
+            // משתנים וטיפוסי נתונים
+            int x = 5;
+            double y = 3.14;
+            string name = "אני";
+            bool flag = true;
 
-        Console.WriteLine($"x = {x}");
-        Console.WriteLine($"y = {y}");
-        Console.WriteLine($"name = {name}");
-        Console.WriteLine($"flag = {flag}");
+            Console.WriteLine($"x = {x}");
+            Console.WriteLine($"y = {y}");
+            Console.WriteLine($"name = {name}");
+            Console.WriteLine($"flag = {flag}");
+        }
     }
 }`
                   )
@@ -443,13 +455,17 @@ class Program
                   handleLoadExample(
                     `using System;
 
-class Program
+namespace MyProgram
 {
-    static void Main()
+    class Program
     {
-        for(int i = 1; i <= 5; i++)
+        static void Main(string[] args)
         {
-            Console.WriteLine($"מספר: {i}");
+            // לולאת For
+            for(int i = 1; i <= 5; i++)
+            {
+                Console.WriteLine($"מספר: {i}");
+            }
         }
     }
 }`
@@ -464,22 +480,26 @@ class Program
                   handleLoadExample(
                     `using System;
 
-class Program
+namespace MyProgram
 {
-    static void Main()
+    class Program
     {
-        int x = 10;
-        if(x > 5)
+        static void Main(string[] args)
         {
-            Console.WriteLine("x גדול מ-5");
-        }
-        else if(x == 5)
-        {
-            Console.WriteLine("x שווה ל-5");
-        }
-        else
-        {
-            Console.WriteLine("x קטן מ-5");
+            // תנאים
+            int x = 10;
+            if(x > 5)
+            {
+                Console.WriteLine("x גדול מ-5");
+            }
+            else if(x == 5)
+            {
+                Console.WriteLine("x שווה ל-5");
+            }
+            else
+            {
+                Console.WriteLine("x קטן מ-5");
+            }
         }
     }
 }`
@@ -494,17 +514,21 @@ class Program
                   handleLoadExample(
                     `using System;
 
-class Program
+namespace MyProgram
 {
-    static int Add(int a, int b)
+    class Program
     {
-        return a + b;
-    }
+        // מתודה לחיבור שני מספרים
+        static int Add(int a, int b)
+        {
+            return a + b;
+        }
 
-    static void Main()
-    {
-        int result = Add(5, 3);
-        Console.WriteLine($"5 + 3 = {result}");
+        static void Main(string[] args)
+        {
+            int result = Add(5, 3);
+            Console.WriteLine($"5 + 3 = {result}");
+        }
     }
 }`
                   )
