@@ -4,6 +4,9 @@ import { ChevronRight, ChevronLeft } from 'lucide-react'
 import { quizzes } from '../data/quizzes'
 import { storage } from '../utils/storage'
 
+// Hebrew letters for answer options
+const HEBREW_LETTERS = ['א', 'ב', 'ג', 'ד', 'ה', 'ו', 'ז', 'ח']
+
 export default function QuizDetail() {
   const { id } = useParams()
   const navigate = useNavigate()
@@ -191,13 +194,18 @@ export default function QuizDetail() {
               <button
                 key={index}
                 onClick={() => handleAnswerSelect(index)}
-                className={`w-full p-4 rounded-lg text-right transition ${
+                className={`w-full p-4 rounded-lg text-right transition flex items-center gap-3 ${
                   selectedAnswer === index
                     ? 'bg-blue-600 text-white font-semibold'
                     : 'bg-gray-100 text-gray-800 hover:bg-gray-200'
                 }`}
               >
-                {String.fromCharCode(65 + index)}. {option}
+                <span className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center font-bold text-lg ${
+                  selectedAnswer === index ? 'bg-white text-blue-600' : 'bg-blue-600 text-white'
+                }`}>
+                  {HEBREW_LETTERS[index]}
+                </span>
+                <span className="flex-1 text-right">{option}</span>
               </button>
             ))}
           </div>

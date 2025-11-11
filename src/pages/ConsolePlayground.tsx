@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import Editor, { useMonaco } from '@monaco-editor/react'
 import { Play, Trash2, Download, Copy } from 'lucide-react'
+import { executeCode } from '../utils/codeExecutor'
 
 interface ExecutionOutput {
   stdout: string
@@ -18,7 +19,7 @@ class Program
     }
 }`
 
-// Mock storage utility
+// Storage utility
 const storage = {
   getPlaygroundCode: () => {
     try {
@@ -33,29 +34,6 @@ const storage = {
     } catch (e) {
       console.error('Failed to save code:', e)
     }
-  }
-}
-
-// Mock code executor
-const executeCode = async (code: string) => {
-  // This is a mock - in real implementation, you'd call a backend API
-  await new Promise(resolve => setTimeout(resolve, 1000))
-  
-  // Simple mock output
-  if (code.includes('Console.WriteLine')) {
-    const matches = code.match(/Console\.WriteLine\("(.+?)"\)/g)
-    if (matches) {
-      const outputs = matches.map(match => {
-        const text = match.match(/"(.+?)"/)?.[1] || ''
-        return text
-      })
-      return { stdout: outputs.join('\n'), stderr: '' }
-    }
-  }
-  
-  return { 
-    stdout: 'הקוד הורץ בהצלחה!\n(זוהי דוגמה - חבר ל-API אמיתי להרצת C#)', 
-    stderr: '' 
   }
 }
 
@@ -126,8 +104,8 @@ export default function ConsolePlayground() {
     try {
       const result = await executeCode(code)
       setOutput({
-        stdout: result.stdout,
-        stderr: result.stderr,
+        stdout: result.stdout || '',
+        stderr: result.stderr || '',
         isRunning: false,
       })
     } catch (error) {
@@ -169,9 +147,12 @@ export default function ConsolePlayground() {
 
   const handleEditorDidMount = (editor: any) => {
     editorRef.current = editor
-    
 
-    
+    // Add keyboard shortcut: Ctrl+Enter to run
+    editor.addCommand(monaco?.KeyMod?.CtrlCmd! | monaco?.KeyCode?.Enter!, () => {
+      handleRun()
+    })
+
     // Set initial focus
     editor.focus()
   }

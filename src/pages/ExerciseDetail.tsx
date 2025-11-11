@@ -165,7 +165,7 @@ export default function ExerciseDetail() {
           {/* Right Panel: Code Editor & Tests */}
           <div className="space-y-4">
             {/* Code Editor */}
-            <div className="bg-white rounded-lg shadow-lg overflow-hidden flex flex-col h-96">
+            <div className="bg-white rounded-lg shadow-lg overflow-hidden flex flex-col" style={{ height: '500px' }}>
               <div className="bg-gray-800 text-white px-4 py-3 flex justify-between items-center">
                 <h2 className="text-lg font-bold">עורך קוד</h2>
               </div>
@@ -177,10 +177,35 @@ export default function ExerciseDetail() {
                   onChange={(value) => setCode(value || '')}
                   theme="vs-dark"
                   options={{
-                    minimap: { enabled: false },
-                    fontSize: 12,
+                    minimap: { enabled: true, maxColumn: 120 },
+                    fontSize: 14,
                     automaticLayout: true,
                     tabSize: 4,
+                    insertSpaces: true,
+                    scrollBeyondLastLine: false,
+                    wordWrap: 'on',
+                    lineNumbers: 'on',
+                    glyphMargin: true,
+                    quickSuggestions: {
+                      other: true,
+                      comments: false,
+                      strings: false,
+                    },
+                    acceptSuggestionOnCommitCharacter: true,
+                    formatOnPaste: true,
+                    formatOnType: true,
+                    autoClosingBrackets: 'always',
+                    autoClosingQuotes: 'always',
+                    autoIndent: 'full',
+                    renderWhitespace: 'selection',
+                    copyWithSyntaxHighlighting: true,
+                    showUnused: true,
+                    renderLineHighlight: 'line',
+                    occurrencesHighlight: 'singleFile',
+                    selectionHighlight: true,
+                    codeLens: true,
+                    folding: true,
+                    foldingHighlight: true,
                   }}
                 />
               </div>
