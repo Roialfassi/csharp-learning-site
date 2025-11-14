@@ -173,10 +173,10 @@ export default function ConsolePlayground() {
           </p>
         </div>
 
-        <div className="grid lg:grid-cols-2 gap-6" style={{ height: 'calc(100vh - 300px)', minHeight: '700px' }}>
+        <div className="grid lg:grid-cols-2 gap-6">
           {/* Code Editor */}
-          <div className="bg-white rounded-lg shadow-lg overflow-hidden flex flex-col h-full">
-            <div className="bg-gray-800 text-white px-6 py-4 flex justify-between items-center flex-shrink-0">
+          <div className="bg-white rounded-lg shadow-lg overflow-hidden flex flex-col" style={{ height: '700px' }}>
+            <div className="bg-gray-800 text-white px-6 py-4 flex justify-between items-center">
               <h2 className="text-lg font-bold">עורך קוד</h2>
               <div className="flex gap-2">
                 <button
@@ -195,51 +195,51 @@ export default function ConsolePlayground() {
                 </button>
               </div>
             </div>
-            <div className="flex-1" style={{ position: 'relative' }}>
-              <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }}>
-                <Editor
-                  height="100%"
-                  width="100%"
-                  language="csharp"
-                  value={code}
-                  onChange={(value) => setCode(value || '')}
-                  theme={theme}
-                  options={{
-                    readOnly: false,
-                    minimap: { enabled: true, maxColumn: 120 },
-                    scrollBeyondLastLine: false,
-                    wordWrap: wordWrap ? 'on' : 'off',
-                    lineNumbers: 'on',
-                    glyphMargin: true,
-                    fontSize: fontSize,
-                    tabSize: 4,
-                    insertSpaces: true,
-                    automaticLayout: true,
-                    quickSuggestions: {
-                      other: true,
-                      comments: false,
-                      strings: false,
-                    },
-                    acceptSuggestionOnCommitCharacter: true,
-                    formatOnPaste: true,
-                    formatOnType: true,
-                    autoClosingBrackets: 'always',
-                    autoClosingQuotes: 'always',
-                    autoIndent: 'full',
-                    renderWhitespace: 'selection',
-                    copyWithSyntaxHighlighting: true,
-                    showUnused: true,
-                    renderLineHighlight: 'line',
-                    occurrencesHighlight: 'singleFile',
-                    selectionHighlight: true,
-                    codeLens: true,
-                    folding: true,
-                    foldingHighlight: true,
-                    foldingImportsByDefault: false,
-                  }}
-                  onMount={handleEditorDidMount}
-                />
-              </div>
+            <div style={{ height: '500px', width: '100%' }}>
+              <Editor
+                height="500px"
+                width="100%"
+                language="csharp"
+                value={code}
+                onChange={(value) => setCode(value || '')}
+                theme={theme}
+                options={{
+                  readOnly: false,
+                  minimap: { enabled: true, maxColumn: 120 },
+                  scrollBeyondLastLine: false,
+                  wordWrap: wordWrap ? 'on' : 'off',
+                  lineNumbers: 'on',
+                  glyphMargin: true,
+                  fontSize: fontSize,
+                  tabSize: 4,
+                  insertSpaces: true,
+                  automaticLayout: true,
+                  domReadOnly: false,
+                  readOnlyMessage: undefined,
+                  quickSuggestions: {
+                    other: true,
+                    comments: false,
+                    strings: false,
+                  },
+                  acceptSuggestionOnCommitCharacter: true,
+                  formatOnPaste: true,
+                  formatOnType: true,
+                  autoClosingBrackets: 'always',
+                  autoClosingQuotes: 'always',
+                  autoIndent: 'full',
+                  renderWhitespace: 'selection',
+                  copyWithSyntaxHighlighting: true,
+                  showUnused: true,
+                  renderLineHighlight: 'line',
+                  occurrencesHighlight: 'singleFile',
+                  selectionHighlight: true,
+                  codeLens: true,
+                  folding: true,
+                  foldingHighlight: true,
+                  foldingImportsByDefault: false,
+                }}
+                onMount={handleEditorDidMount}
+              />
             </div>
 
             {/* Control Buttons */}
@@ -321,13 +321,13 @@ export default function ConsolePlayground() {
           </div>
 
           {/* Output Console */}
-          <div className="bg-white rounded-lg shadow-lg overflow-hidden flex flex-col h-full">
-            <div className="bg-black text-white px-6 py-4 flex-shrink-0">
+          <div className="bg-white rounded-lg shadow-lg overflow-hidden flex flex-col" style={{ height: '700px' }}>
+            <div className="bg-black text-white px-6 py-4">
               <h2 className="text-lg font-bold">פלט</h2>
             </div>
 
             {/* Output Display */}
-            <div className="flex-1 bg-black text-green-400 font-mono text-sm p-6 overflow-auto">
+            <div className="flex-1 bg-black text-green-400 font-mono text-sm p-6 overflow-auto" style={{ minHeight: '500px' }}>
               {output.isRunning ? (
                 <div className="flex items-center gap-2">
                   <div className="animate-spin">⏳</div>
