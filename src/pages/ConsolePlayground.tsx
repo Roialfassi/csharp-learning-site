@@ -18,7 +18,7 @@ export default function ConsolePlayground() {
           <iframe
             width="100%"
             height="100%"
-            src="https://dotnetfiddle.net/Widget/MeVCUJ"
+            src="https://dotnetfiddle.net/Widget"
             frameBorder="0"
             title="C# Console Playground"
             style={{ border: 'none' }}
