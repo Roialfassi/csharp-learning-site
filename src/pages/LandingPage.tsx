@@ -26,7 +26,23 @@ export default function LandingPage() {
             בחרו איך להתחיל
           </h2>
 
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {/* OOP Guide Card */}
+            <Link to="/oop">
+              <div className="bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow p-8 h-full cursor-pointer hover:scale-105 transform transition">
+                <div className="text-5xl mb-4">🧩</div>
+                <h3 className="text-2xl font-bold mb-4 text-gray-800">
+                  מדריך OOP מקיף
+                </h3>
+                <p className="text-gray-600 mb-6">
+                  מחלקות, ירושה, פולימורפיזם, הפשטה וממשקים - כל תכנות מונחה עצמים במקום אחד
+                </p>
+                <div className="bg-orange-100 text-orange-700 px-4 py-2 rounded-lg inline-block">
+                  קראו עכשיו →
+                </div>
+              </div>
+            </Link>
+
             {/* Console Playground Card */}
             <Link to="/playground">
               <div className="bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow p-8 h-full cursor-pointer hover:scale-105 transform transition">

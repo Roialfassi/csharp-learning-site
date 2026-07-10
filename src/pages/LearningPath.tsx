@@ -129,6 +129,13 @@ const topicExplanations: Record<string, { overview: string; whatYouWillLearn: st
   },
 }
 
+// Topics that have a deep-dive section in the comprehensive OOP guide
+const oopGuideLinks: Record<string, string> = {
+  classes: '/oop#classes-objects',
+  inheritance: '/oop#inheritance',
+  polymorphism: '/oop#polymorphism',
+}
+
 export default function LearningPath() {
   const completedExercises = storage.getCompletedExercises()
   const quizProgress = storage.getQuizProgress()
@@ -310,6 +317,14 @@ export default function LearningPath() {
 
                       {/* Links to Exercises and Quizzes */}
                       <div className="flex flex-wrap gap-3">
+                        {oopGuideLinks[topic.id] && (
+                          <Link
+                            to={oopGuideLinks[topic.id]}
+                            className="inline-flex items-center gap-2 bg-orange-500 text-white px-5 py-2 rounded-lg font-semibold hover:bg-orange-600 transition"
+                          >
+                            <span>📖 מדריך OOP מלא</span>
+                          </Link>
+                        )}
                         {stats.topicExercises.length > 0 && (
                           <Link
                             to={`/exercise/${stats.topicExercises[0].id}`}
