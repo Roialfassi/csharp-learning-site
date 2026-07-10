@@ -1,11 +1,8 @@
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import Editor from '@monaco-editor/react'
-import { Play, ChevronRight, ChevronLeft, Lightbulb } from 'lucide-react'
+import { ChevronRight, ChevronLeft, Lightbulb, CheckCircle } from 'lucide-react'
 import { exercises } from '../data/exercises'
-import { runExerciseTests, allTestsPassed, getPassedCount } from '../utils/exerciseValidator'
 import { storage } from '../utils/storage'
-import type { TestResult } from '../types/exercise'
 
 export default function ExerciseDetail() {
   const { id } = useParams()
@@ -13,30 +10,18 @@ export default function ExerciseDetail() {
   const exerciseId = parseInt(id || '1')
   const exercise = exercises.find((e) => e.id === exerciseId)
 
-  const [code, setCode] = useState('')
-  const [results, setResults] = useState<TestResult[]>([])
-  const [isRunning, setIsRunning] = useState(false)
   const [showHints, setShowHints] = useState<number[]>([])
   const [showSolution, setShowSolution] = useState(false)
+  const [markedComplete, setMarkedComplete] = useState(false)
 
   useEffect(() => {
     if (exercise) {
-      const savedCode = storage.getExerciseCode(exerciseId)
-      setCode(savedCode || exercise.starterCode)
-      setResults([])
       setShowHints([])
       setShowSolution(false)
+      const completed = storage.getCompletedExercises().includes(exerciseId)
+      setMarkedComplete(completed)
     }
   }, [exerciseId, exercise])
-
-  useEffect(() => {
-    if (code && exercise) {
-      const timer = setTimeout(() => {
-        storage.saveExerciseCode(exerciseId, code)
-      }, 2000)
-      return () => clearTimeout(timer)
-    }
-  }, [code, exerciseId, exercise])
 
   if (!exercise) {
     return (
@@ -48,18 +33,9 @@ export default function ExerciseDetail() {
     )
   }
 
-  const handleRun = async () => {
-    setIsRunning(true)
-    try {
-      const testResults = await runExerciseTests(code, exercise.testCases)
-      setResults(testResults)
-
-      if (allTestsPassed(testResults)) {
-        storage.markExerciseComplete(exerciseId)
-      }
-    } finally {
-      setIsRunning(false)
-    }
+  const handleMarkComplete = () => {
+    storage.markExerciseComplete(exerciseId)
+    setMarkedComplete(true)
   }
 
   const handleNextExercise = () => {
@@ -75,8 +51,6 @@ export default function ExerciseDetail() {
       navigate(`/exercise/${prevId}`)
     }
   }
-
-  const allPassed = allTestsPassed(results)
 
   return (
     <div className="min-h-screen bg-gray-100 py-8 px-4">
@@ -104,145 +78,128 @@ export default function ExerciseDetail() {
               </span>
             </div>
           </div>
-          {allPassed && <div className="text-4xl">✅</div>}
+          {markedComplete && <div className="text-4xl">✅</div>}
         </div>
 
-        <div className="grid lg:grid-cols-2 gap-6">
-          {/* Left Panel: Description & Instructions */}
-          <div className="space-y-4">
-            {/* Description */}
-            <div className="bg-white rounded-lg shadow-lg p-6">
-              <h2 className="text-xl font-bold mb-4 text-gray-800">תיאור התרגיל</h2>
-              <p className="text-gray-700 leading-relaxed">{exercise.description}</p>
-            </div>
+        {/* Exercise Content */}
+        <div className="space-y-6">
+          {/* Description */}
+          <div className="bg-white rounded-lg shadow-lg p-6">
+            <h2 className="text-xl font-bold mb-4 text-gray-800">תיאור התרגיל</h2>
+            <p className="text-gray-700 leading-relaxed">{exercise.description}</p>
+          </div>
 
-            {/* Hints */}
-            <div className="bg-white rounded-lg shadow-lg p-6">
-              <h2 className="text-xl font-bold mb-4 text-gray-800">רמזים</h2>
-              <div className="space-y-2">
-                {exercise.hints.map((hint, index) => (
-                  <button
-                    key={index}
-                    onClick={() =>
-                      setShowHints((prev) =>
-                        prev.includes(index) ? prev.filter((i) => i !== index) : [...prev, index]
-                      )
-                    }
-                    className="w-full text-right bg-blue-50 hover:bg-blue-100 p-4 rounded border-r-4 border-blue-600 transition flex items-start gap-2"
-                  >
-                    <Lightbulb size={18} className="flex-shrink-0 text-blue-600 mt-1" />
-                    <div className="flex-1">
-                      <div className="font-semibold text-gray-800">רמז {index + 1}</div>
-                      {showHints.includes(index) && (
-                        <p className="text-gray-700 mt-2 text-sm">{hint}</p>
-                      )}
+          {/* Starter Code Reference */}
+          <div className="bg-white rounded-lg shadow-lg p-6">
+            <h2 className="text-xl font-bold mb-4 text-gray-800">קוד התחלתי</h2>
+            <div className="bg-gray-900 text-green-400 p-4 rounded font-mono text-sm overflow-x-auto">
+              <pre>{exercise.starterCode}</pre>
+            </div>
+          </div>
+
+          {/* DotNetFiddle Editor */}
+          <div className="bg-white rounded-lg shadow-lg overflow-hidden">
+            <div className="bg-gray-800 text-white px-6 py-4">
+              <h2 className="text-lg font-bold">עורך קוד - כתבו את הפתרון שלכם</h2>
+            </div>
+            <div style={{ height: '600px' }}>
+              <iframe
+                width="100%"
+                height="100%"
+                src="https://dotnetfiddle.net/Widget"
+                frameBorder="0"
+                title="C# Exercise Editor"
+                style={{ border: 'none' }}
+              />
+            </div>
+          </div>
+
+          {/* Expected Test Cases */}
+          <div className="bg-white rounded-lg shadow-lg p-6">
+            <h2 className="text-xl font-bold mb-4 text-gray-800">מקרי בדיקה - בדקו את הקוד שלכם</h2>
+            <p className="text-gray-600 mb-4">הריצו את הקוד שלכם בעורך למעלה ובדקו שהוא עובד נכון עבור המקרים הבאים:</p>
+            <div className="space-y-3">
+              {exercise.testCases.map((testCase, index) => (
+                <div key={index} className="bg-gray-50 p-4 rounded border border-gray-200">
+                  <div className="font-semibold text-gray-800 mb-2">בדיקה {index + 1}</div>
+                  {testCase.input && (
+                    <div className="text-sm text-gray-700 mb-1">
+                      <span className="font-semibold">קלט:</span> {testCase.input}
                     </div>
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Solution */}
-            {results.length > 0 && !allPassed && (
-              <button
-                onClick={() => setShowSolution(!showSolution)}
-                className="w-full bg-purple-600 text-white px-4 py-3 rounded font-bold hover:bg-purple-700 transition"
-              >
-                {showSolution ? 'הסתר פתרון' : 'הראה פתרון'}
-              </button>
-            )}
-
-            {showSolution && (
-              <div className="bg-white rounded-lg shadow-lg p-6">
-                <h2 className="text-xl font-bold mb-4 text-gray-800">פתרון רמוז</h2>
-                <div className="bg-gray-900 text-green-400 p-4 rounded font-code text-sm overflow-x-auto">
-                  <pre>{exercise.solution}</pre>
+                  )}
+                  <div className="text-sm text-gray-700">
+                    <span className="font-semibold">פלט צפוי:</span> {testCase.expectedOutput}
+                  </div>
                 </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Mark Complete */}
+          <div className="bg-white rounded-lg shadow-lg p-6">
+            {markedComplete ? (
+              <div className="bg-green-50 border-r-4 border-green-600 p-6 rounded flex items-center gap-3">
+                <CheckCircle size={32} className="text-green-600" />
+                <div>
+                  <h3 className="text-xl font-bold text-green-800 mb-1">כל הכבוד! 🎉</h3>
+                  <p className="text-green-700">סימנת את התרגיל כהושלם!</p>
+                </div>
+              </div>
+            ) : (
+              <div>
+                <p className="text-gray-700 mb-4">כשפתרתם את התרגיל ובדקתם שהכל עובד נכון, סמנו אותו כהושלם:</p>
+                <button
+                  onClick={handleMarkComplete}
+                  className="flex items-center gap-2 bg-green-600 text-white px-6 py-3 rounded-lg font-bold hover:bg-green-700 transition"
+                >
+                  <CheckCircle size={20} />
+                  סמן כהושלם
+                </button>
               </div>
             )}
           </div>
 
-          {/* Right Panel: Code Editor & Tests */}
-          <div className="space-y-4">
-            {/* Code Editor */}
-            <div className="bg-white rounded-lg shadow-lg overflow-hidden flex flex-col h-96">
-              <div className="bg-gray-800 text-white px-4 py-3 flex justify-between items-center">
-                <h2 className="text-lg font-bold">עורך קוד</h2>
-              </div>
-              <div className="flex-1">
-                <Editor
-                  height="100%"
-                  language="csharp"
-                  value={code}
-                  onChange={(value) => setCode(value || '')}
-                  theme="vs-dark"
-                  options={{
-                    minimap: { enabled: false },
-                    fontSize: 12,
-                    automaticLayout: true,
-                    tabSize: 4,
-                  }}
-                />
-              </div>
-              <div className="bg-gray-100 px-4 py-3 border-t flex gap-2">
+          {/* Hints */}
+          <div className="bg-white rounded-lg shadow-lg p-6">
+            <h2 className="text-xl font-bold mb-4 text-gray-800">רמזים</h2>
+            <div className="space-y-2">
+              {exercise.hints.map((hint, index) => (
                 <button
-                  onClick={handleRun}
-                  disabled={isRunning}
-                  className="flex items-center gap-2 bg-green-600 text-white px-4 py-2 rounded font-semibold hover:bg-green-700 disabled:bg-gray-400 transition"
+                  key={index}
+                  onClick={() =>
+                    setShowHints((prev) =>
+                      prev.includes(index) ? prev.filter((i) => i !== index) : [...prev, index]
+                    )
+                  }
+                  className="w-full text-right bg-blue-50 hover:bg-blue-100 p-4 rounded border-r-4 border-blue-600 transition flex items-start gap-2"
                 >
-                  <Play size={16} />
-                  הרץ בדיקות
+                  <Lightbulb size={18} className="flex-shrink-0 text-blue-600 mt-1" />
+                  <div className="flex-1">
+                    <div className="font-semibold text-gray-800">רמז {index + 1}</div>
+                    {showHints.includes(index) && (
+                      <p className="text-gray-700 mt-2 text-sm">{hint}</p>
+                    )}
+                  </div>
                 </button>
-              </div>
+              ))}
             </div>
+          </div>
 
-            {/* Test Results */}
-            {results.length > 0 && (
-              <div className="bg-white rounded-lg shadow-lg p-6">
-                <h2 className="text-xl font-bold mb-4 text-gray-800">
-                  תוצאות: {getPassedCount(results)}/{results.length} עברו
-                </h2>
-                <div className="space-y-2">
-                  {results.map((result) => (
-                    <div
-                      key={result.testNumber}
-                      className={`p-3 rounded border-r-4 ${
-                        result.passed
-                          ? 'bg-green-50 border-green-600'
-                          : 'bg-red-50 border-red-600'
-                      }`}
-                    >
-                      <div className="flex items-center gap-2 font-semibold mb-1">
-                        {result.passed ? '✅' : '❌'}
-                        בדיקה {result.testNumber}
-                        {result.passed ? ': עברה' : ': נכשלה'}
-                      </div>
-                      {!result.passed && (
-                        <div className="text-sm text-gray-700 space-y-1">
-                          <div>
-                            <span className="font-semibold">צפוי:</span> {result.expected}
-                          </div>
-                          <div>
-                            <span className="font-semibold">קיבלנו:</span> {result.actual}
-                          </div>
-                          {result.error && (
-                            <div className="text-red-700 mt-2">
-                              <span className="font-semibold">שגיאה:</span> {result.error}
-                            </div>
-                          )}
-                        </div>
-                      )}
-                    </div>
-                  ))}
+          {/* Solution */}
+          <div className="bg-white rounded-lg shadow-lg p-6">
+            <button
+              onClick={() => setShowSolution(!showSolution)}
+              className="w-full bg-purple-600 text-white px-4 py-3 rounded font-bold hover:bg-purple-700 transition mb-4"
+            >
+              {showSolution ? 'הסתר פתרון' : 'הראה פתרון'}
+            </button>
+
+            {showSolution && (
+              <div>
+                <h2 className="text-xl font-bold mb-4 text-gray-800">פתרון מוצע</h2>
+                <div className="bg-gray-900 text-green-400 p-4 rounded font-mono text-sm overflow-x-auto">
+                  <pre>{exercise.solution}</pre>
                 </div>
-              </div>
-            )}
-
-            {/* Success Message */}
-            {allPassed && results.length > 0 && (
-              <div className="bg-green-50 border-r-4 border-green-600 p-6 rounded">
-                <h3 className="text-xl font-bold text-green-800 mb-2">כל הכבוד! 🎉</h3>
-                <p className="text-green-700">פתרת את התרגיל בהצלחה!</p>
               </div>
             )}
           </div>

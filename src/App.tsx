@@ -8,6 +8,7 @@ import ExerciseDetail from './pages/ExerciseDetail'
 import Quizzes from './pages/Quizzes'
 import QuizDetail from './pages/QuizDetail'
 import LearningPath from './pages/LearningPath'
+import OOP from './pages/OOP'
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
           <Route path="/" element={<LandingPage />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/path" element={<LearningPath />} />
+          <Route path="/oop" element={<OOP />} />
           <Route path="/playground" element={<ConsolePlayground />} />
           <Route path="/exercises" element={<Exercises />} />
           <Route path="/exercise/:id" element={<ExerciseDetail />} />

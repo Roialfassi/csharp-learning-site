@@ -10,6 +10,7 @@ export default function Navbar() {
 
   const navItems = [
     { path: '/', label: 'בית' },
+    { path: '/oop', label: 'תכנות מונחה עצמים' },
     { path: '/playground', label: 'תרגול חופשי' },
     { path: '/exercises', label: 'תרגילים' },
     { path: '/quizzes', label: 'חידונים' },
