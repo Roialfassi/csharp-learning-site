@@ -1,8 +1,10 @@
 import { Link } from 'react-router-dom'
-import { ArrowRight, BookOpen, Award } from 'lucide-react'
+import { ArrowRight, BookOpen, Award, Rocket, GraduationCap } from 'lucide-react'
 import { topics } from '../data/topics'
 import { exercises } from '../data/exercises'
 import { quizzes } from '../data/quizzes'
+import { getLessonByTopicId } from '../data/lessons'
+import { getProjectByTopicId } from '../data/projects'
 import { storage } from '../utils/storage'
 
 // Detailed explanations for each topic
@@ -16,6 +18,16 @@ const topicExplanations: Record<string, { overview: string; whatYouWillLearn: st
       'ביצוע פעולות חשבוניות בסיסיות',
     ],
     tips: 'התחילו עם תרגילים פשוטים ועברו הלאה רק כשאתם מרגישים בטוחים. זה התשתית לכל מה שיבוא!'
+  },
+  conversion: {
+    overview: 'קלט מהמשתמש מגיע תמיד כטקסט, וכדי לחשב איתו צריך להמיר אותו למספר. במודול הזה נלמד להמיר בין טיפוסים, ונכיר את האופרטורים שילוו אתכם בכל לולאה שתכתבו.',
+    whatYouWillLearn: [
+      'int.Parse ו-double.Parse להמרת טקסט למספר',
+      'Casting בין טיפוסים מספריים: (int) ו-(double)',
+      'אופרטור השארית % והשימושים שלו',
+      'אופרטורים מקוצרים: ++, --, += ו-*=',
+    ],
+    tips: 'המלכודת הגדולה: חלוקת שני מספרים שלמים נותנת מספר שלם! 7/2 הוא 3, לא 3.5. חלקו ב-2.0 כדי לקבל תוצאה מדויקת.'
   },
   conditions: {
     overview: 'תנאים הם הדרך שבה התוכנית שלנו מקבלת החלטות. נלמד להשתמש ב-if, else ו-switch כדי לגרום לקוד להתנהג אחרת בהתאם למצבים שונים.',
@@ -66,6 +78,26 @@ const topicExplanations: Record<string, { overview: string; whatYouWillLearn: st
       'Method overloading',
     ],
     tips: 'מתודה טובה עושה דבר אחד היטב. אם מתודה עושה יותר מדי דברים, כדאי לפצל אותה.'
+  },
+  'enums-structs': {
+    overview: 'עד עכשיו השתמשנו בטיפוסים ש-C# נתנה לנו. עכשיו נגדיר טיפוסים משלנו: enum לקבוצת ערכים קבועה (ימים, כיוונים, מצבים), ו-struct לחבילת נתונים שהולכים ביחד. זהו החימום המושלם לקראת מחלקות.',
+    whatYouWillLearn: [
+      'הגדרת enum ושימוש בו ב-switch',
+      'המרות בין enum למספרים',
+      'הגדרת struct עם שדות ומתודות',
+      'מתי כדאי כל אחד מהם',
+    ],
+    tips: 'enum הופך "מספרים קסומים" לקוד קריא: case TrafficLight.Red ברור בהרבה מ-case 0.'
+  },
+  'value-reference': {
+    overview: 'למה שינוי של מערך אחד משנה "גם" את השני? המודול הזה חושף איך C# באמת שומרת נתונים בזיכרון — וזה מסביר באגים שמבלבלים מתכנתים מנוסים.',
+    whatYouWillLearn: [
+      'ההבדל בין טיפוסי ערך לטיפוסי הפניה',
+      'מה קורה לפרמטרים כשמעבירים אותם למתודה',
+      'null ו-NullReferenceException',
+      'ref, out ו-int.TryParse',
+    ],
+    tips: 'העתקה של מערך עם copy = original לא באמת מעתיקה! היא רק נותנת שם שני לאותו מערך. להעתקה אמיתית צריך מערך חדש ולולאה.'
   },
   collections: {
     overview: 'אוספים הם מבני נתונים מתקדמים יותר ממערכים. הם גמישים יותר ומאפשרים להוסיף ולהסיר פריטים בקלות.',
@@ -139,20 +171,35 @@ const oopGuideLinks: Record<string, string> = {
 export default function LearningPath() {
   const completedExercises = storage.getCompletedExercises()
   const quizProgress = storage.getQuizProgress()
+  const completedLessons = storage.getCompletedLessons()
+  const projectProgress = storage.getProjectProgress()
 
   const getTopicStats = (topic: (typeof topics)[0]) => {
     const topicExercises = exercises.filter((e) => e.topic === topic.hebrewName)
     const topicQuizzes = quizzes.filter((q) => q.topic === topic.hebrewName)
+    const lesson = getLessonByTopicId(topic.id)
+    const project = getProjectByTopicId(topic.id)
 
     const exercisesCompleted = topicExercises.filter((e) => completedExercises.includes(e.id)).length
     const quizzesCompleted = topicQuizzes.filter((q) => !!quizProgress[q.id]).length
+    const lessonDone = !!lesson && completedLessons.includes(topic.id)
+    const projectDone =
+      !!project && (projectProgress[topic.id] || []).length === project.steps.length
 
-    const totalTasks = topicExercises.length + topicQuizzes.length
-    const completedTasks = exercisesCompleted + quizzesCompleted
+    // A module has 4 kinds of work: lesson, exercises, quizzes, project
+    const totalTasks =
+      topicExercises.length + topicQuizzes.length + (lesson ? 1 : 0) + (project ? 1 : 0)
+    const completedTasks =
+      exercisesCompleted + quizzesCompleted + (lessonDone ? 1 : 0) + (projectDone ? 1 : 0)
 
     return {
       topicExercises,
       topicQuizzes,
+      lesson,
+      project,
+      lessonDone,
+      projectDone,
+      projectSteps: (projectProgress[topic.id] || []).length,
       exercisesCompleted,
       exercisesTotal: topicExercises.length,
       quizzesCompleted,
@@ -162,12 +209,11 @@ export default function LearningPath() {
     }
   }
 
-  // Calculate overall progress
-  const totalExercises = exercises.length
-  const totalQuizzes = quizzes.length
-  const totalTasks = totalExercises + totalQuizzes
-  const completedTasks = completedExercises.length + Object.keys(quizProgress).length
-  const overallProgress = Math.round((completedTasks / totalTasks) * 100)
+  // Calculate overall progress across every module
+  const allStats = topics.map((t) => getTopicStats(t))
+  const totalTasks = allStats.reduce((sum, s) => sum + s.totalTasks, 0)
+  const completedTasks = allStats.reduce((sum, s) => sum + s.completedTasks, 0)
+  const overallProgress = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-gray-100 py-8 px-4">
@@ -278,6 +324,12 @@ export default function LearningPath() {
                       {/* Stats */}
                       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
                         <div className="bg-white rounded p-3 border border-gray-200">
+                          <p className="text-xs text-gray-600 mb-1">שיעור</p>
+                          <p className="text-lg font-bold text-gray-800">
+                            {stats.lesson ? (stats.lessonDone ? '✓ נלמד' : 'ממתין') : '—'}
+                          </p>
+                        </div>
+                        <div className="bg-white rounded p-3 border border-gray-200">
                           <p className="text-xs text-gray-600 mb-1">תרגילים</p>
                           <p className="text-lg font-bold text-gray-800">
                             {stats.exercisesCompleted}/{stats.exercisesTotal}
@@ -290,15 +342,11 @@ export default function LearningPath() {
                           </p>
                         </div>
                         <div className="bg-white rounded p-3 border border-gray-200">
-                          <p className="text-xs text-gray-600 mb-1">סה"כ משימות</p>
+                          <p className="text-xs text-gray-600 mb-1">פרויקט</p>
                           <p className="text-lg font-bold text-gray-800">
-                            {stats.completedTasks}/{stats.totalTasks}
-                          </p>
-                        </div>
-                        <div className="bg-white rounded p-3 border border-gray-200">
-                          <p className="text-xs text-gray-600 mb-1">התקדמות</p>
-                          <p className="text-lg font-bold text-gray-800">
-                            {stats.totalTasks > 0 ? Math.round((stats.completedTasks / stats.totalTasks) * 100) : 0}%
+                            {stats.project
+                              ? `${stats.projectSteps}/${stats.project.steps.length}`
+                              : '—'}
                           </p>
                         </div>
                       </div>
@@ -315,8 +363,18 @@ export default function LearningPath() {
                         </div>
                       </div>
 
-                      {/* Links to Exercises and Quizzes */}
+                      {/* Links to lesson, exercises, quizzes and project */}
                       <div className="flex flex-wrap gap-3">
+                        {stats.lesson && (
+                          <Link
+                            to={`/lesson/${topic.id}`}
+                            className="inline-flex items-center gap-2 bg-emerald-600 text-white px-5 py-2 rounded-lg font-semibold hover:bg-emerald-700 transition"
+                          >
+                            <GraduationCap size={18} />
+                            <span>{stats.lessonDone ? 'חזרה על השיעור' : 'התחילו כאן: השיעור'}</span>
+                            <ArrowRight size={16} />
+                          </Link>
+                        )}
                         {oopGuideLinks[topic.id] && (
                           <Link
                             to={oopGuideLinks[topic.id]}
@@ -342,6 +400,16 @@ export default function LearningPath() {
                           >
                             <Award size={18} />
                             <span>חידונים ({stats.topicQuizzes.length})</span>
+                            <ArrowRight size={16} />
+                          </Link>
+                        )}
+                        {stats.project && (
+                          <Link
+                            to={`/project/${topic.id}`}
+                            className="inline-flex items-center gap-2 bg-orange-600 text-white px-5 py-2 rounded-lg font-semibold hover:bg-orange-700 transition"
+                          >
+                            <Rocket size={18} />
+                            <span>פרויקט: {stats.project.title}</span>
                             <ArrowRight size={16} />
                           </Link>
                         )}

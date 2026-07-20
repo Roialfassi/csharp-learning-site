@@ -1,0 +1,143 @@
+import type { Quiz } from '../../types/quiz'
+
+// מחלקות
+export const classesQuizzes: Quiz[] = [
+  {
+    id: 10,
+    title: 'מחלקות ו-OOP',
+    description: 'יסודות OOP, constructors, properties ופעולות',
+    topic: 'מחלקות',
+    questions: [
+      {
+        id: 1,
+        type: 'בחר תשובה',
+        question: 'מה משמש constructor?',
+        options: [
+          'לשנות משתנה',
+          'לאתחל עצם',
+          'להדפיס טקסט',
+          'להגדיר מחלקה',
+        ],
+        correctAnswer: 1,
+        explanation: 'התשובה היא \'לאתחל עצם\'.',
+      },
+      {
+        id: 2,
+        type: 'בחר תשובה',
+        question: 'מה שם constructor?',
+        options: [
+          'זהה לשם המתודה',
+          'זהה לשם המחלקה',
+          '__init__',
+          'constructor',
+        ],
+        correctAnswer: 1,
+        explanation: 'התשובה היא \'זהה לשם המחלקה\'.',
+      },
+      {
+        id: 3,
+        type: 'בחר תשובה',
+        question: 'מה משמש property?',
+        options: [
+          'להפעיל פעולה',
+          'לשמור נתונים של עצם',
+          'להדפיס טקסט',
+          'להגדיר מחלקה',
+        ],
+        correctAnswer: 1,
+        explanation: 'התשובה היא \'לשמור נתונים של עצם\'.',
+      },
+      {
+        id: 4,
+        type: 'בחר תשובה',
+        question: 'מה משמש method?',
+        options: [
+          'לשנות משתנה',
+          'להפעיל פעולה של עצם',
+          'להדפיס טקסט',
+          'להגדיר מחלקה',
+        ],
+        correctAnswer: 1,
+        explanation: 'התשובה היא \'להפעיל פעולה של עצם\'.',
+      },
+      {
+        id: 5,
+        type: 'בחר תשובה',
+        question: 'מה משמש new?',
+        options: [
+          'להגדיר משתנה',
+          'ליצור עצם חדש',
+          'להדפיס טקסט',
+          'לשנות ערך',
+        ],
+        correctAnswer: 1,
+        explanation: 'התשובה היא \'ליצור עצם חדש\'.',
+      },
+      {
+        id: 6,
+        type: 'בחר תשובה',
+        question: 'מה הם שלושת עמודי OOP?',
+        options: [
+          'משתנים, מתודות, classes',
+          'Encapsulation, Inheritance, Polymorphism',
+          'Array, List, Dictionary',
+          'if, for, while',
+        ],
+        correctAnswer: 1,
+        explanation: 'התשובה היא \'Encapsulation, Inheritance, Polymorphism\'.',
+      },
+      {
+        id: 7,
+        type: 'בחר תשובה',
+        question: 'מה Encapsulation?',
+        options: [
+          'הסתרת פרטים וחשיפת ממשק',
+          'שימוש במתודות',
+          'יצירת מערך',
+          'קריאה לפונקציה',
+        ],
+        correctAnswer: 0,
+        explanation: 'התשובה היא \'הסתרת פרטים וחשיפת ממשק\'.',
+      },
+      {
+        id: 8,
+        type: 'בחר תשובה',
+        question: 'מה this?',
+        options: [
+          'יצירת משתנה',
+          'התייחסות לעצם הנוכחי',
+          'קריאה למתודה',
+          'ערך בריק',
+        ],
+        correctAnswer: 1,
+        explanation: 'התשובה היא \'התייחסות לעצם הנוכחי\'.',
+      },
+      {
+        id: 9,
+        type: 'בחר תשובה',
+        question: 'מה המטרה של getter ו-setter?',
+        options: [
+          'לשמור נתונים',
+          'להפעיל פעולות',
+          'לשלוט על גישה ל-properties',
+          'להדפיס טקסט',
+        ],
+        correctAnswer: 2,
+        explanation: 'התשובה היא \'לשלוט על גישה ל-properties\'.',
+      },
+      {
+        id: 10,
+        type: 'בחר תשובה',
+        question: 'מה public ו-private?',
+        options: [
+          'שמות של משתנים',
+          'רמות גישה',
+          'סוגי לולאות',
+          'תנאים לוגיים',
+        ],
+        correctAnswer: 1,
+        explanation: 'התשובה היא \'רמות גישה\'.',
+      },
+    ],
+  },
+]

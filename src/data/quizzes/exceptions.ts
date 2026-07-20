@@ -1,0 +1,138 @@
+import type { Quiz } from '../../types/quiz'
+
+// טיפול בשגיאות
+export const exceptionsQuizzes: Quiz[] = [
+  {
+    id: 12,
+    title: 'טיפול בשגיאות - try/catch',
+    description: 'טיפול בשגיאות, exceptions וניקוי משאבים',
+    topic: 'טיפול בשגיאות',
+    questions: [
+      {
+        id: 1,
+        type: 'בחר תשובה',
+        question: 'מה משמש try block?',
+        options: [
+          'להגדיר משתנה',
+          'לכוסות קוד שעלול להסיב שגיאה',
+          'להדפיס טקסט',
+          'להגדיר מתודה',
+        ],
+        correctAnswer: 1,
+        explanation: 'התשובה היא \'לכוסות קוד שעלול להסיב שגיאה\'.',
+      },
+      {
+        id: 2,
+        type: 'בחר תשובה',
+        question: 'מה משמש catch block?',
+        options: [
+          'להגדיר משתנה',
+          'לטפל בשגיאה',
+          'להדפיס טקסט',
+          'להגדיר מתודה',
+        ],
+        correctAnswer: 1,
+        explanation: 'התשובה היא \'לטפל בשגיאה\'.',
+      },
+      {
+        id: 3,
+        type: 'בחר תשובה',
+        question: 'מה משמש finally block?',
+        options: [
+          'להגדיר משתנה',
+          'לטפל בשגיאה',
+          'להפעיל קוד בכל מקרה',
+          'להגדיר מתודה',
+        ],
+        correctAnswer: 2,
+        explanation: 'התשובה היא \'להפעיל קוד בכל מקרה\'.',
+      },
+      {
+        id: 4,
+        type: 'בחר תשובה',
+        question: 'מה throw?',
+        options: [
+          'להדפיס שגיאה',
+          'להשליך exception',
+          'להחזיר ערך',
+          'להגדיר משתנה',
+        ],
+        correctAnswer: 1,
+        explanation: 'התשובה היא \'להשליך exception\'.',
+      },
+      {
+        id: 5,
+        type: 'בחר תשובה',
+        question: 'מה IndexOutOfRangeException?',
+        options: [
+          'שגיאה בחלוקה',
+          'גישה לאינדקס שאינו קיים',
+          'אתחול שגוי',
+          'שגיאה בחיבור',
+        ],
+        correctAnswer: 1,
+        explanation: 'התשובה היא \'גישה לאינדקס שאינו קיים\'.',
+      },
+      {
+        id: 6,
+        type: 'בחר תשובה',
+        question: 'מה NullReferenceException?',
+        options: [
+          'שגיאה בחלוקה',
+          'גישה לערך null',
+          'אתחול שגוי',
+          'שגיאה בחיבור',
+        ],
+        correctAnswer: 1,
+        explanation: 'התשובה היא \'גישה לערך null\'.',
+      },
+      {
+        id: 7,
+        type: 'בחר תשובה',
+        question: 'מה DivideByZeroException?',
+        options: [
+          'חלוקה באפס',
+          'שגיאה בחלוקה במספר',
+          'גישה לאינדקס שאינו קיים',
+          'אתחול שגוי',
+        ],
+        correctAnswer: 0,
+        explanation: 'התשובה היא \'חלוקה באפס\'.',
+      },
+      {
+        id: 8,
+        type: 'בחר תשובה',
+        question: 'האם ניתן לתפוס רק exception מסוג אחד?',
+        options: ['כן', 'לא', 'רק Exception הכללי', 'רק ממחלקה אחת'],
+        correctAnswer: 0,
+        explanation: 'התשובה היא \'כן\'.',
+      },
+      {
+        id: 9,
+        type: 'בחר תשובה',
+        question: 'מה Stacktrace?',
+        options: [
+          'שם המתודה',
+          'רשימה של קריאות המתודות',
+          'מספר השגיאה',
+          'שם של משתנה',
+        ],
+        correctAnswer: 1,
+        explanation: 'התשובה היא \'רשימה של קריאות המתודות\'.',
+      },
+      {
+        id: 10,
+        type: 'בחר תשובה',
+        question: 'איך כותבים catch עם סוג ספציפי של exception?',
+        options: [
+          'catch',
+          'catch (Exception e)',
+          'catch (ArgumentException e)',
+          'catch Exception',
+        ],
+        correctAnswer: 2,
+        explanation: 'התשובה היא \'catch (ArgumentException e)\'.',
+      },
+    ],
+  },
+]

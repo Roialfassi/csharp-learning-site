@@ -1,17 +1,31 @@
 import { Link } from 'react-router-dom'
-import { TrendingUp, Target, Zap, Award } from 'lucide-react'
+import { TrendingUp, Target, Zap, Award, Rocket } from 'lucide-react'
 import { exercises } from '../data/exercises'
 import { quizzes } from '../data/quizzes'
 import { topics } from '../data/topics'
+import { lessons } from '../data/lessons'
+import { projects } from '../data/projects'
 import { storage } from '../utils/storage'
 
 export default function Dashboard() {
   const completedExercises = storage.getCompletedExercises()
   const quizProgress = storage.getQuizProgress()
+  const completedLessons = storage.getCompletedLessons()
+  const projectProgress = storage.getProjectProgress()
 
-  const totalTasks = exercises.length + quizzes.length
-  const completedTasks = completedExercises.length + Object.keys(quizProgress).length
-  const progressPercentage = Math.round((completedTasks / totalTasks) * 100)
+  const projectList = Object.values(projects)
+  const completedProjects = projectList.filter(
+    (p) => (projectProgress[p.topicId] || []).length === p.steps.length
+  ).length
+  const lessonCount = Object.keys(lessons).length
+
+  const totalTasks = exercises.length + quizzes.length + lessonCount + projectList.length
+  const completedTasks =
+    completedExercises.length +
+    Object.keys(quizProgress).length +
+    completedLessons.length +
+    completedProjects
+  const progressPercentage = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0
 
   // Calculate average quiz score
   const avgQuizScore =
@@ -81,7 +95,7 @@ export default function Dashboard() {
         </div>
 
         {/* Main Stats Grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6 mb-8">
           {/* Overall Progress */}
           <div className="bg-white rounded-lg shadow-lg p-6">
             <div className="flex items-center justify-between mb-4">
@@ -140,6 +154,28 @@ export default function Dashboard() {
             </div>
           </div>
 
+          {/* Projects */}
+          <div className="bg-white rounded-lg shadow-lg p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-bold text-gray-800">פרויקטים</h3>
+              <Rocket className="text-orange-600" size={24} />
+            </div>
+            <div className="text-4xl font-bold text-orange-600 mb-2">
+              {completedProjects}/{projectList.length}
+            </div>
+            <p className="text-sm text-gray-600">
+              {completedLessons.length}/{lessonCount} שיעורים נלמדו
+            </p>
+            <div className="w-full bg-gray-300 rounded-full h-2 mt-4">
+              <div
+                className="bg-orange-600 h-2 rounded-full transition-all duration-500"
+                style={{
+                  width: `${projectList.length > 0 ? (completedProjects / projectList.length) * 100 : 0}%`,
+                }}
+              />
+            </div>
+          </div>
+
           {/* Achievements */}
           <div className="bg-white rounded-lg shadow-lg p-6">
             <div className="flex items-center justify-between mb-4">
@@ -147,13 +183,25 @@ export default function Dashboard() {
               <Award className="text-yellow-600" size={24} />
             </div>
             <div className="text-4xl font-bold text-yellow-600 mb-2">
-              {completedExercises.length >= 5 ? '3' : completedExercises.length >= 3 ? '2' : '1'}
+              {
+                [
+                  completedExercises.length >= 1,
+                  completedExercises.length >= 10,
+                  completedExercises.length >= 50,
+                  completedProjects >= 1,
+                  completedProjects >= 5,
+                  completedLessons.length >= 5,
+                ].filter(Boolean).length
+              }
             </div>
             <p className="text-sm text-gray-600">תגים שהשגת</p>
-            <div className="flex gap-2 mt-4">
-              {completedExercises.length >= 1 && <div className="text-2xl">🏅</div>}
-              {completedExercises.length >= 3 && <div className="text-2xl">🌟</div>}
-              {completedExercises.length >= 5 && <div className="text-2xl">🏆</div>}
+            <div className="flex gap-2 mt-4 flex-wrap">
+              {completedExercises.length >= 1 && <div className="text-2xl" title="תרגיל ראשון">🏅</div>}
+              {completedExercises.length >= 10 && <div className="text-2xl" title="10 תרגילים">🌟</div>}
+              {completedExercises.length >= 50 && <div className="text-2xl" title="50 תרגילים">🏆</div>}
+              {completedProjects >= 1 && <div className="text-2xl" title="פרויקט ראשון">🚀</div>}
+              {completedProjects >= 5 && <div className="text-2xl" title="5 פרויקטים">🎖️</div>}
+              {completedLessons.length >= 5 && <div className="text-2xl" title="5 שיעורים">📚</div>}
             </div>
           </div>
         </div>

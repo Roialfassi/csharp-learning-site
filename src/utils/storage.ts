@@ -57,6 +57,37 @@ class Program
     }
   },
 
+  // Lesson completion (keyed by topic id)
+  getCompletedLessons: (): string[] => {
+    const completed = localStorage.getItem(`${STORAGE_KEY_PREFIX}completed_lessons`)
+    return completed ? JSON.parse(completed) : []
+  },
+
+  markLessonComplete: (topicId: string): void => {
+    const completed = storage.getCompletedLessons()
+    if (!completed.includes(topicId)) {
+      completed.push(topicId)
+      localStorage.setItem(`${STORAGE_KEY_PREFIX}completed_lessons`, JSON.stringify(completed))
+    }
+  },
+
+  // Project progress (keyed by topic id -> completed step indexes)
+  getProjectProgress: (): Record<string, number[]> => {
+    const progress = localStorage.getItem(`${STORAGE_KEY_PREFIX}project_progress`)
+    return progress ? JSON.parse(progress) : {}
+  },
+
+  toggleProjectStep: (topicId: string, stepIndex: number): number[] => {
+    const progress = storage.getProjectProgress()
+    const steps = progress[topicId] || []
+    const updated = steps.includes(stepIndex)
+      ? steps.filter((s) => s !== stepIndex)
+      : [...steps, stepIndex]
+    progress[topicId] = updated
+    localStorage.setItem(`${STORAGE_KEY_PREFIX}project_progress`, JSON.stringify(progress))
+    return updated
+  },
+
   // User preferences
   getUserPreferences: () => {
     const prefs = localStorage.getItem(`${STORAGE_KEY_PREFIX}preferences`)

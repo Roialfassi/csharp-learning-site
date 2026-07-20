@@ -1,0 +1,138 @@
+import type { Quiz } from '../../types/quiz'
+
+// מתודות
+export const methodsQuizzes: Quiz[] = [
+  {
+    id: 11,
+    title: 'מתודות - הגדרה וקריאה',
+    description: 'יצירת מתודות עם פרמטרים וערכי החזרה',
+    topic: 'מתודות',
+    questions: [
+      {
+        id: 1,
+        type: 'בחר תשובה',
+        question: 'מה הוא signature של מתודה?',
+        options: [
+          'שם המתודה בלבד',
+          'שם, פרמטרים וסוג החזרה',
+          'גוף המתודה',
+          'מספר הקוד',
+        ],
+        correctAnswer: 1,
+        explanation: 'התשובה היא \'שם, פרמטרים וסוג החזרה\'.',
+      },
+      {
+        id: 2,
+        type: 'בחר תשובה',
+        question: 'מה משמש return?',
+        options: [
+          'להדפיס טקסט',
+          'להחזיר ערך מ-method',
+          'לסיים את התוכנית',
+          'ליצור משתנה',
+        ],
+        correctAnswer: 1,
+        explanation: 'התשובה היא \'להחזיר ערך מ-method\'.',
+      },
+      {
+        id: 3,
+        type: 'בחר תשובה',
+        question: 'מה void?',
+        options: [
+          'דוחה',
+          'סוג של משתנה',
+          'מתודה שלא מחזירה ערך',
+          'מחלקה',
+        ],
+        correctAnswer: 2,
+        explanation: 'התשובה היא \'מתודה שלא מחזירה ערך\'.',
+      },
+      {
+        id: 4,
+        type: 'בחר תשובה',
+        question: 'איך קוראים למתודה?',
+        options: [
+          'methodName;',
+          'methodName();',
+          'call methodName;',
+          'methodName{}',
+        ],
+        correctAnswer: 1,
+        explanation: 'התשובה היא \'methodName();\'.',
+      },
+      {
+        id: 5,
+        type: 'בחר תשובה',
+        question: 'מה פרמטר?',
+        options: [
+          'ערך מוחזר',
+          'משתנה שמתודה קיבלה',
+          'שם המתודה',
+          'סוג של משתנה',
+        ],
+        correctAnswer: 1,
+        explanation: 'התשובה היא \'משתנה שמתודה קיבלה\'.',
+      },
+      {
+        id: 6,
+        type: 'בחר תשובה',
+        question: 'מה מספר הפרמטרים המקסימלי?',
+        options: ['1', '2', '5', 'ללא הגבלה'],
+        correctAnswer: 3,
+        explanation: 'התשובה היא \'ללא הגבלה\'.',
+      },
+      {
+        id: 7,
+        type: 'בחר תשובה',
+        question: 'איך מחזירים מערך מ-method?',
+        options: [
+          'return array;',
+          'int[] = array;',
+          'array return;',
+          'שלא ניתן',
+        ],
+        correctAnswer: 0,
+        explanation: 'התשובה היא \'return array;\'.',
+      },
+      {
+        id: 8,
+        type: 'בחר תשובה',
+        question: 'מה Overloading?',
+        options: [
+          'להגדיר מתודה פעמיים',
+          'מתודות עם אותו שם אבל פרמטרים שונים',
+          'להפעיל מתודה פעמיים',
+          'סוג של לולאה',
+        ],
+        correctAnswer: 1,
+        explanation: 'התשובה היא \'מתודות עם אותו שם אבל פרמטרים שונים\'.',
+      },
+      {
+        id: 9,
+        type: 'בחר תשובה',
+        question: 'מה Default Parameters?',
+        options: [
+          'משתנים גלובליים',
+          'ערך ברירת מחדל לפרמטר',
+          'משתנים מקומיים',
+          'משתנים סטטיים',
+        ],
+        correctAnswer: 1,
+        explanation: 'התשובה היא \'ערך ברירת מחדל לפרמטר\'.',
+      },
+      {
+        id: 10,
+        type: 'בחר תשובה',
+        question: 'מה stack overflow?',
+        options: [
+          'שגיאת זיכרון',
+          'קריאה עמוקה מדי של מתודה',
+          'מתודה שקוראת לעצמה',
+          'שגיאת syntax',
+        ],
+        correctAnswer: 1,
+        explanation: 'התשובה היא \'קריאה עמוקה מדי של מתודה\'.',
+      },
+    ],
+  },
+]

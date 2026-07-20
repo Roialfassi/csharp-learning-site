@@ -8,6 +8,9 @@ import ExerciseDetail from './pages/ExerciseDetail'
 import Quizzes from './pages/Quizzes'
 import QuizDetail from './pages/QuizDetail'
 import LearningPath from './pages/LearningPath'
+import LessonPage from './pages/LessonPage'
+import ProjectPage from './pages/ProjectPage'
+import Projects from './pages/Projects'
 import OOP from './pages/OOP'
 
 function App() {
@@ -20,6 +23,9 @@ function App() {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/path" element={<LearningPath />} />
           <Route path="/oop" element={<OOP />} />
+          <Route path="/lesson/:topicId" element={<LessonPage />} />
+          <Route path="/projects" element={<Projects />} />
+          <Route path="/project/:topicId" element={<ProjectPage />} />
           <Route path="/playground" element={<ConsolePlayground />} />
           <Route path="/exercises" element={<Exercises />} />
           <Route path="/exercise/:id" element={<ExerciseDetail />} />

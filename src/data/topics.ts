@@ -17,11 +17,19 @@ export const topics: Topic[] = [
     icon: '📚',
   },
   {
+    id: 'conversion',
+    name: 'Type Conversion & Operators',
+    hebrewName: 'המרות ואופרטורים',
+    description: 'Parse, Convert, casting, אופרטורים חשבוניים ומקוצרים',
+    order: 2,
+    icon: '🔄',
+  },
+  {
     id: 'conditions',
     name: 'Conditions',
     hebrewName: 'תנאים',
     description: 'if/else, switch, תנאים לוגיים',
-    order: 2,
+    order: 3,
     icon: '🔀',
   },
   {
@@ -29,7 +37,7 @@ export const topics: Topic[] = [
     name: 'Loops',
     hebrewName: 'לולאות',
     description: 'for, while, do-while, foreach',
-    order: 3,
+    order: 4,
     icon: '🔁',
   },
   {
@@ -37,7 +45,7 @@ export const topics: Topic[] = [
     name: 'Strings',
     hebrewName: 'מחרוזות',
     description: 'פעולות על מחרוזות, פורמט וטיוב',
-    order: 4,
+    order: 5,
     icon: '📝',
   },
   {
@@ -45,7 +53,7 @@ export const topics: Topic[] = [
     name: 'Arrays',
     hebrewName: 'מערכים',
     description: 'הגדרה, גישה, איטרציה, מערכים דו-מימדיים',
-    order: 5,
+    order: 6,
     icon: '📦',
   },
   {
@@ -53,15 +61,31 @@ export const topics: Topic[] = [
     name: 'Methods',
     hebrewName: 'מתודות',
     description: 'הגדרה, פרמטרים, ערכי החזרה',
-    order: 6,
+    order: 7,
     icon: '⚙️',
+  },
+  {
+    id: 'enums-structs',
+    name: 'Enums & Structs',
+    hebrewName: 'Enum ו-Struct',
+    description: 'טיפוסים מותאמים אישית: קבוצות ערכים קבועות ומבנים פשוטים',
+    order: 8,
+    icon: '🧱',
+  },
+  {
+    id: 'value-reference',
+    name: 'Value vs Reference Types',
+    hebrewName: 'ערך מול הפניה',
+    description: 'ההבדל בין טיפוסי ערך לטיפוסי הפניה, null והעתקה',
+    order: 9,
+    icon: '🪞',
   },
   {
     id: 'collections',
     name: 'Collections',
     hebrewName: 'אוספים',
     description: 'List, Dictionary, HashSet וקולקציות אחרות',
-    order: 7,
+    order: 10,
     icon: '🗂️',
   },
   {
@@ -69,7 +93,7 @@ export const topics: Topic[] = [
     name: 'Classes',
     hebrewName: 'מחלקות',
     description: 'יסודות OOP, constructors, properties',
-    order: 8,
+    order: 11,
     icon: '🏗️',
   },
   {
@@ -77,7 +101,7 @@ export const topics: Topic[] = [
     name: 'Inheritance',
     hebrewName: 'ירושה',
     description: 'יורש, override, base keyword',
-    order: 9,
+    order: 12,
     icon: '👨‍👧',
   },
   {
@@ -85,7 +109,7 @@ export const topics: Topic[] = [
     name: 'Polymorphism',
     hebrewName: 'פולימורפיזם',
     description: 'virtual methods, interfaces',
-    order: 10,
+    order: 13,
     icon: '🎭',
   },
   {
@@ -93,7 +117,7 @@ export const topics: Topic[] = [
     name: 'Exception Handling',
     hebrewName: 'טיפול בשגיאות',
     description: 'try/catch/finally, throw, custom exceptions',
-    order: 11,
+    order: 14,
     icon: '⚠️',
   },
   {
@@ -101,7 +125,7 @@ export const topics: Topic[] = [
     name: 'LINQ',
     hebrewName: 'LINQ',
     description: 'שאילתות על נתונים, filtering, ordering',
-    order: 12,
+    order: 15,
     icon: '🔍',
   },
 ]

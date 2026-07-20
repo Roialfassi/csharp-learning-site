@@ -1,0 +1,143 @@
+import type { Quiz } from '../../types/quiz'
+
+// LINQ
+export const linqQuizzes: Quiz[] = [
+  {
+    id: 13,
+    title: 'LINQ - שאילתות על נתונים',
+    description: 'Where, Select, OrderBy וביצוע שאילתות',
+    topic: 'LINQ',
+    questions: [
+      {
+        id: 1,
+        type: 'בחר תשובה',
+        question: 'מה LINQ?',
+        options: [
+          'שפת תכנות',
+          'Language Integrated Query - שפה לשאילתות',
+          'סוג של מערך',
+          'מחלקה',
+        ],
+        correctAnswer: 1,
+        explanation: 'התשובה היא \'Language Integrated Query - שפה לשאילתות\'.',
+      },
+      {
+        id: 2,
+        type: 'בחר תשובה',
+        question: 'מה Where?',
+        options: [
+          'סידור נתונים',
+          'סיכום נתונים',
+          'סינון נתונים על פי תנאי',
+          'הוספת נתונים',
+        ],
+        correctAnswer: 2,
+        explanation: 'התשובה היא \'סינון נתונים על פי תנאי\'.',
+      },
+      {
+        id: 3,
+        type: 'בחר תשובה',
+        question: 'מה Select?',
+        options: [
+          'בחירת נתונים',
+          'הפוך נתונים לצורה חדשה',
+          'סינון נתונים',
+          'סידור נתונים',
+        ],
+        correctAnswer: 1,
+        explanation: 'התשובה היא \'הפוך נתונים לצורה חדשה\'.',
+      },
+      {
+        id: 4,
+        type: 'בחר תשובה',
+        question: 'מה OrderBy?',
+        options: [
+          'סיכום נתונים',
+          'סינון נתונים',
+          'סידור נתונים בסדר עולה',
+          'הפוך נתונים',
+        ],
+        correctAnswer: 2,
+        explanation: 'התשובה היא \'סידור נתונים בסדר עולה\'.',
+      },
+      {
+        id: 5,
+        type: 'בחר תשובה',
+        question: 'מה OrderByDescending?',
+        options: [
+          'סיכום נתונים',
+          'סינון נתונים',
+          'סידור נתונים בסדר יורד',
+          'הפוך נתונים',
+        ],
+        correctAnswer: 2,
+        explanation: 'התשובה היא \'סידור נתונים בסדר יורד\'.',
+      },
+      {
+        id: 6,
+        type: 'בחר תשובה',
+        question: 'מה Count?',
+        options: [
+          'הקטנה של רשימה',
+          'סיכום ערכים',
+          'ספירת אלמנטים',
+          'בחירת ערך',
+        ],
+        correctAnswer: 2,
+        explanation: 'התשובה היא \'ספירת אלמנטים\'.',
+      },
+      {
+        id: 7,
+        type: 'בחר תשובה',
+        question: 'מה First?',
+        options: [
+          'האלמנט הראשון',
+          'האלמנט האחרון',
+          'ספירת אלמנטים',
+          'סידור אלמנטים',
+        ],
+        correctAnswer: 0,
+        explanation: 'התשובה היא \'האלמנט הראשון\'.',
+      },
+      {
+        id: 8,
+        type: 'בחר תשובה',
+        question: 'מה Last?',
+        options: [
+          'האלמנט הראשון',
+          'האלמנט האחרון',
+          'ספירת אלמנטים',
+          'סידור אלמנטים',
+        ],
+        correctAnswer: 1,
+        explanation: 'התשובה היא \'האלמנט האחרון\'.',
+      },
+      {
+        id: 9,
+        type: 'בחר תשובה',
+        question: 'מה Sum?',
+        options: [
+          'ספירה',
+          'סיכום ערכים',
+          'בחירה',
+          'סינון',
+        ],
+        correctAnswer: 1,
+        explanation: 'התשובה היא \'סיכום ערכים\'.',
+      },
+      {
+        id: 10,
+        type: 'בחר תשובה',
+        question: 'מה Average?',
+        options: [
+          'סיכום ערכים',
+          'חישוב הממוצע',
+          'בחירה',
+          'סינון',
+        ],
+        correctAnswer: 1,
+        explanation: 'התשובה היא \'חישוב הממוצע\'.',
+      },
+    ],
+  },
+]

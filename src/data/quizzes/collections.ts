@@ -1,0 +1,128 @@
+import type { Quiz } from '../../types/quiz'
+
+// אוספים
+export const collectionsQuizzes: Quiz[] = [
+  {
+    id: 9,
+    title: 'קולקציות - List ו-Dictionary',
+    description: 'שימוש ב-List, Dictionary, Add, Remove וכו\'',
+    topic: 'אוספים',
+    questions: [
+      {
+        id: 1,
+        type: 'בחר תשובה',
+        question: 'מה ההבדל בין Array ל-List?',
+        options: [
+          'Array קטן יותר',
+          'List יכול להשתנות בגודל, Array לא',
+          'List מהיר יותר',
+          'אין הבדל',
+        ],
+        correctAnswer: 1,
+        explanation: 'התשובה היא \'List יכול להשתנות בגודל, Array לא\'.',
+      },
+      {
+        id: 2,
+        type: 'בחר תשובה',
+        question: 'איך יוצרים List?',
+        options: [
+          'List list = {};',
+          'List<int> list = new List<int>();',
+          'int[] list = new List();',
+          'list = [];',
+        ],
+        correctAnswer: 1,
+        explanation: 'התשובה היא \'List<int> list = new List<int>();\'.',
+      },
+      {
+        id: 3,
+        type: 'בחר תשובה',
+        question: 'מה משמש Add בתוך List?',
+        options: ['מסיר אלמנט', 'מוסיף אלמנט', 'מחליף אלמנט', 'מפחית אלמנט'],
+        correctAnswer: 1,
+        explanation: 'התשובה היא \'מוסיף אלמנט\'.',
+      },
+      {
+        id: 4,
+        type: 'בחר תשובה',
+        question: 'איך מחזקים את כמות האלמנטים ב-List?',
+        options: ['list.Length', 'list.Count()', 'list.Size', 'list.Count'],
+        correctAnswer: 3,
+        explanation: 'התשובה היא \'list.Count\'.',
+      },
+      {
+        id: 5,
+        type: 'בחר תשובה',
+        question: 'מה משמש Dictionary?',
+        options: [
+          'שמירת זוגות של מפתח-ערך',
+          'שמירת רשימה',
+          'שמירת מערך',
+          'שמירת תווים',
+        ],
+        correctAnswer: 0,
+        explanation: 'התשובה היא \'שמירת זוגות של מפתח-ערך\'.',
+      },
+      {
+        id: 6,
+        type: 'בחר תשובה',
+        question: 'איך יוצרים Dictionary?',
+        options: [
+          'Dictionary dict = {};',
+          'Dictionary<string, int> dict = new Dictionary<string, int>();',
+          'dict = {}',
+          'new dict();',
+        ],
+        correctAnswer: 1,
+        explanation: 'התשובה היא \'Dictionary<string, int> dict = new Dictionary<string, int>();\'.',
+      },
+      {
+        id: 7,
+        type: 'בחר תשובה',
+        question: 'איך מוסיפים ערך ל-Dictionary?',
+        options: [
+          'dict.Add("key", 5);',
+          'dict["key"] = 5;',
+          'shniihum משניים נכונים',
+          'dict.Insert("key", 5);',
+        ],
+        correctAnswer: 2,
+        explanation: 'התשובה היא \'שניהם משניים נכונים\'.',
+      },
+      {
+        id: 8,
+        type: 'בחר תשובה',
+        question: 'איך מסירים אלמנט מ-List?',
+        options: ['list.Delete(item);', 'list.Remove(item);', 'list.Pop();', 'delete list[0];'],
+        correctAnswer: 1,
+        explanation: 'התשובה היא \'list.Remove(item);\'.',
+      },
+      {
+        id: 9,
+        type: 'בחר תשובה',
+        question: 'מה HashSet?',
+        options: [
+          'מערך בטוח',
+          'אוסף של ערכים ייחודיים ללא סדר',
+          'מילון',
+          'רשימה מיושרת',
+        ],
+        correctAnswer: 1,
+        explanation: 'התשובה היא \'אוסף של ערכים ייחודיים ללא סדר\'.',
+      },
+      {
+        id: 10,
+        type: 'בחר תשובה',
+        question: 'מה יתרון של List על Array?',
+        options: [
+          'List מהיר יותר',
+          'List יכול להשתנות בגודל',
+          'List עובד רק עם מספרים',
+          'אין יתרון',
+        ],
+        correctAnswer: 1,
+        explanation: 'התשובה היא \'List יכול להשתנות בגודל\'.',
+      },
+    ],
+  },
+]
